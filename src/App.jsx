@@ -17,7 +17,7 @@ const VEHICLES = {
   "Porsche":        ["911 996/997/991/992","911 GT3","Boxster 986/987/981/718","Cayman 987/981/718","Cayenne 9PA/92A/9YA","Macan 95B","Panamera 970/971","Taycan"],
   "Land Rover":     ["Defender L319/L663","Discovery 3/4/5","Discovery Sport L550","Freelander 2","Range Rover L322/L405","Range Rover Sport L320/L494","Range Rover Evoque L538/L551","Range Rover Velar L560"],
   "Jaguar":         ["E-Pace X540","F-Pace X761","F-Type X152","I-Pace","XE X760","XF X250/X260","XJ X350/X351"],
-  "MINI":           ["Mini One/Cooper R50/R56/F55/F56","Mini Cooper S","Mini Cooper SE","Mini Cabrio R52/R57/F57","Mini Clubman R55/F54","Mini Countryman R60/F60","Mini Paceman R61"],
+  "MINI":           ["Mini One/Cooper R50/R56/F55/F56","Mini Cooper S","Mini Cooper SE","Mini Cabrio R52/R57/F57","Mini Clubman R55/F54","Mini Countryman R60/F60"],
   "Bentley":        ["Continental GT III","Bentayga","Flying Spur III","Mulsanne"],
   "Rolls-Royce":    ["Ghost RR4/N29B","Phantom VIII","Cullinan","Spectre"],
   "Aston Martin":   ["DB11","DB12","Vantage V8/V12","DBS Superleggera","DBX"],
@@ -78,9 +78,8 @@ const VEHICLES = {
 // ══════════════════════════════════════════════════════════
 // CLASSIFICATION
 // ══════════════════════════════════════════════════════════
-const MOTOS   = ["Honda Moto","Yamaha Moto","Kawasaki","Suzuki Moto","Ducati","KTM","BMW Moto","Triumph","Harley-Davidson","Aprilia"];
-const PL      = ["MAN Trucks","Scania","Volvo Trucks","Iveco","DAF","Mercedes Trucks","Renault Trucks"];
-const PREMIUM = ["Ferrari","Lamborghini","Bentley","Rolls-Royce","Aston Martin","Maserati"];
+const MOTOS = ["Honda Moto","Yamaha Moto","Kawasaki","Suzuki Moto","Ducati","KTM","BMW Moto","Triumph","Harley-Davidson","Aprilia"];
+const PL    = ["MAN Trucks","Scania","Volvo Trucks","Iveco","DAF","Mercedes Trucks","Renault Trucks"];
 
 const BRAND_GROUPS = [
   { label:"🇫🇷 France",          brands:["Renault","Peugeot","Citroën","DS Automobiles","Dacia"] },
@@ -99,534 +98,674 @@ const BRAND_GROUPS = [
 ];
 
 // ══════════════════════════════════════════════════════════
-// BASE DE RECOMMANDATIONS — NORMES CONSTRUCTEURS OFFICIELLES
-// Priorité : modèle exact > famille > marque
+// BASE DE RECOMMANDATIONS — 100% CATALOGUE SHELL MAROC
+//
+// Chaque entrée contient :
+//   produit       : produit disponible au Maroc
+//   viscosité     : viscosité exacte
+//   normes        : normes constructeur officielles
+//   vidange       : intervalle de vidange
+//   complement    : produit boîte/pont disponible au Maroc
+//   raison        : explication technique
+//   — Si le constructeur recommande un produit absent du catalogue Maroc :
+//   alerteProduit : nom exact du produit recommandé par le constructeur
+//   alerteRaison  : pourquoi ce produit est différent
 // ══════════════════════════════════════════════════════════
 const RECO = [
 
-  // ── VAG : VOLKSWAGEN ─────────────────────────────────────
-  { brands:["Volkswagen"], models:["Golf VIII","Golf GTI","Golf R","Passat B8","Arteon","Tiguan II","T-Roc","ID.3","ID.4","ID.5","ID.7","Polo VI","Touareg III"], engine:"essence", yearMin:2017, yearMax:2099,
-    produit:"Shell Helix Ultra ECT C2 0W-30", viscosité:"0W-30",
+  // ════════════════════════════════
+  // GROUPE VAG — Volkswagen
+  // ════════════════════════════════
+  { brands:["Volkswagen"], engine:"essence", yearMin:2017, yearMax:2099,
+    produit:"Shell Helix Ultra ECT C2/C3 0W-30", viscosité:"0W-30",
     normes:"VW 508.00 · ACEA C2 · API SN PLUS", vidange:"30 000 km ou 2 ans",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme VW 508.00 obligatoire (Longlife 3) sur tous les TSI/TFSI post-2017. Viscosité 0W-30 pour les intervalles Longlife et la réduction de consommation." },
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Norme VW 508.00 (Longlife 3) pour les moteurs TSI/TDI récents. Disponible au Maroc en bidon 1L, 5L et fût 209L.",
+    alerteProduit: null },
 
-  { brands:["Volkswagen"], models:["Golf V/VI/VII","Golf GTI","Polo V","Passat B6/B7","Tiguan I","Touran","Transporter T5/T6","Caddy IV","Crafter II","Amarok"], engine:"essence", yearMin:2005, yearMax:2016,
-    produit:"Shell Helix Ultra 5W-40", viscosité:"5W-40",
+  { brands:["Volkswagen"], engine:"essence", yearMin:2000, yearMax:2016,
+    produit:"Shell Helix Ultra 5W-40 SN Plus", viscosité:"5W-40",
     normes:"VW 502.00 · ACEA A3/B4 · API SN", vidange:"15 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Norme VW 502.00 pour les moteurs EA111/EA113/EA888 Gen 1&2. Protection des cames et segments sur les TSI/TFSI à chaîne de distribution." },
+    complement:"Spirax S2 G 80W-90",
+    raison:"Conforme VW 502.00 pour les moteurs EA111/EA888 Gen 1&2. Disponible au Maroc en toutes tailles.",
+    alerteProduit: null },
 
-  { brands:["Volkswagen"], models:["Golf VIII","Golf GTI","Passat B8","Arteon","Tiguan II","T-Roc","T-Cross","Caddy V","Transporter T6","Crafter II"], engine:"diesel", yearMin:2016, yearMax:2099,
+  { brands:["Volkswagen"], engine:"diesel", yearMin:2016, yearMax:2099,
     produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
     normes:"VW 507.00 · ACEA C3 · API CF", vidange:"30 000 km ou 2 ans",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme VW 507.00 impérative pour les TDI Euro 5/6 avec FAP. Formule Low-SAPS pour ne pas colmater le filtre à particules DPF Volkswagen." },
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Norme VW 507.00 pour les TDI Euro 5/6 avec FAP. Formule Low-SAPS disponible au Maroc.",
+    alerteProduit: null },
 
-  { brands:["Volkswagen"], models:["Golf IV/V/VI/VII","Passat B5/B6/B7","Touareg I/II","Transporter T5","Caddy IV"], engine:"diesel", yearMin:1998, yearMax:2015,
-    produit:"Shell Helix Ultra 5W-40", viscosité:"5W-40",
+  { brands:["Volkswagen"], engine:"diesel", yearMin:1998, yearMax:2015,
+    produit:"Shell Helix Ultra 5W-40 SN Plus", viscosité:"5W-40",
     normes:"VW 505.01 · ACEA B4 · API CF", vidange:"15 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Norme VW 505.01 pour les TDI à injection pompe-injecteur (PD). Résistance au cisaillement élevée indispensable pour les paliers de bielles de ces moteurs." },
+    complement:"Spirax S2 G 80W-90",
+    raison:"Norme VW 505.01 pour les TDI à injection pompe-injecteur (PD). Disponible au Maroc.",
+    alerteProduit: null },
 
-  // ── VAG : AUDI ────────────────────────────────────────────
-  { brands:["Audi"], models:["A3 8Y","A4 B9","A5 F5","A6 C8","A7 2018","A8 D5","Q3 F3","Q4 e-tron","Q5 FY","Q7 4M","Q8","RS3","RS4","RS5","RS6","S3","S4","S5","S6","e-tron GT"], engine:"essence", yearMin:2017, yearMax:2099,
-    produit:"Shell Helix Ultra ECT C2 0W-30", viscosité:"0W-30",
+  // ════════════════════════════════
+  // AUDI
+  // ════════════════════════════════
+  { brands:["Audi"], engine:"essence", yearMin:2017, yearMax:2099,
+    produit:"Shell Helix Ultra ECT C2/C3 0W-30", viscosité:"0W-30",
     normes:"VW 508.00 / 504.00 · ACEA C2 · API SN PLUS", vidange:"30 000 km ou 2 ans",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Specification VW 508.00/504.00 pour les moteurs TFSI EA888 Gen 4 et V6 TFSI Audi. Indispensable pour les intervalles Audi Longlife Service et la protection des turbos haute pression." },
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Norme VW 508.00/504.00 pour les moteurs TFSI EA888 Gen 4 Audi récents. Disponible au Maroc.",
+    alerteProduit: null },
 
-  { brands:["Audi"], models:["A3 8P/8V","A4 B6/B7/B8","A5 8T","A6 C6/C7","A7 2011","A8 D4","Q3 8U","Q5 8R","Q7 4L","TT 8J/8S","R8","RS4","RS6","S4"], engine:"essence", yearMin:2003, yearMax:2016,
-    produit:"Shell Helix Ultra 5W-40", viscosité:"5W-40",
+  { brands:["Audi"], engine:"essence", yearMin:2000, yearMax:2016,
+    produit:"Shell Helix Ultra 5W-40 SN Plus", viscosité:"5W-40",
     normes:"VW 502.00 · ACEA A3/B4 · API SN", vidange:"15 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Norme VW 502.00 pour les moteurs TFSI/FSI de l'ancienne génération Audi. Protection des injecteurs direct (FSI) et des cames DOHC à forte pression d'alimentation." },
+    complement:"Spirax S2 G 80W-90",
+    raison:"Norme VW 502.00 pour les moteurs TFSI/FSI Audi ancienne génération.",
+    alerteProduit: null },
 
-  { brands:["Audi"], models:["A3 8V","A4 B8/B9","A6 C7/C8","Q5 FY","Q7 4M","Q8"], engine:"diesel", yearMin:2015, yearMax:2099,
+  { brands:["Audi"], engine:"diesel", yearMin:2015, yearMax:2099,
     produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
     normes:"VW 507.00 · ACEA C3 · API CF", vidange:"30 000 km ou 2 ans",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme VW 507.00 pour les TDI Audi Euro 6 avec SCR et FAP. Protection du système de post-traitement des émissions et des injecteurs piezoélectriques haute pression." },
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Norme VW 507.00 pour les TDI Audi Euro 6 avec FAP/SCR. Low-SAPS disponible au Maroc.",
+    alerteProduit: null },
 
-  { brands:["Audi"], models:["A4 B6/B7","A6 C6","Q7 4L","TT 8J"], engine:"diesel", yearMin:2000, yearMax:2014,
-    produit:"Shell Helix Ultra 5W-40", viscosité:"5W-40",
+  { brands:["Audi"], engine:"diesel", yearMin:2000, yearMax:2014,
+    produit:"Shell Helix Ultra 5W-40 SN Plus", viscosité:"5W-40",
     normes:"VW 505.01 · ACEA B4 · API CF", vidange:"15 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Norme VW 505.01 pour les TDI Audi à injection pompe-injecteur (PD). Viscosité 5W-40 maintenant l'épaisseur de film dans les paliers soumis à très haute pression." },
+    complement:"Spirax S2 G 80W-90",
+    raison:"Norme VW 505.01 pour les TDI Audi à injection pompe-injecteur (PD).",
+    alerteProduit: null },
 
-  // ── VAG : SEAT / CUPRA / SKODA ────────────────────────────
-  { brands:["SEAT","Cupra","Škoda"], models:["Leon IV","Cupra Leon","Cupra Formentor","Cupra Born","Terramar","Octavia IV","Superb III","Kodiaq","Karoq","Kamiq","Enyaq","Scala","Arona","Ibiza V","Ateca","Tarraco"], engine:"essence", yearMin:2017, yearMax:2099,
-    produit:"Shell Helix Ultra ECT C2 0W-30", viscosité:"0W-30",
+  // ════════════════════════════════
+  // SEAT / CUPRA / ŠKODA
+  // ════════════════════════════════
+  { brands:["SEAT","Cupra","Škoda"], engine:"essence", yearMin:2017, yearMax:2099,
+    produit:"Shell Helix Ultra ECT C2/C3 0W-30", viscosité:"0W-30",
     normes:"VW 508.00 · ACEA C2 · API SN PLUS", vidange:"30 000 km ou 2 ans",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme VW 508.00 pour les moteurs EA211 evo et EA888 Gen 4 des marques SEAT/Cupra/Škoda. Viscosité 0W-30 pour les services Longlife et la réduction de consommation exigée par le groupe VAG." },
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Norme VW 508.00 pour les moteurs EA211 evo et EA888 Gen 4 SEAT/Cupra/Škoda. Disponible au Maroc.",
+    alerteProduit: null },
 
-  { brands:["SEAT","Cupra","Škoda"], models:["Leon IV","Cupra Leon","Cupra Formentor","Octavia IV","Superb III","Kodiaq","Karoq","Ateca","Tarraco"], engine:"diesel", yearMin:2016, yearMax:2099,
+  { brands:["SEAT","Cupra","Škoda"], engine:"essence", yearMin:2000, yearMax:2016,
+    produit:"Shell Helix Ultra 5W-40 SN Plus", viscosité:"5W-40",
+    normes:"VW 502.00 · ACEA A3/B4 · API SN", vidange:"15 000 km ou 1 an",
+    complement:"Spirax S2 G 80W-90",
+    raison:"Norme VW 502.00 pour les anciens moteurs SEAT/Škoda de la famille VAG.",
+    alerteProduit: null },
+
+  { brands:["SEAT","Cupra","Škoda"], engine:"diesel", yearMin:2016, yearMax:2099,
     produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
     normes:"VW 507.00 · ACEA C3 · API CF", vidange:"30 000 km ou 2 ans",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme VW 507.00 obligatoire pour les TDI Euro 6 SEAT/Cupra/Škoda. Low-SAPS pour protéger les filtres à particules DPF de ces moteurs." },
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Norme VW 507.00 pour les TDI Euro 6 SEAT/Cupra/Škoda avec FAP. Disponible au Maroc.",
+    alerteProduit: null },
 
-  // ── BMW / MINI ────────────────────────────────────────────
-  { brands:["BMW"], models:["Série 3 G20","Série 4 G22","Série 5 G30","Série 7 G11","X1 U11","X3 G01","X4 G02","X5 G05","X6 G06","X7","i4","i5","i7","iX","iX1","iX3","M3","M4","M5"], engine:"essence", yearMin:2019, yearMax:2099,
-    produit:"Shell Helix Ultra 0W-30", viscosité:"0W-30",
+  { brands:["SEAT","Cupra","Škoda"], engine:"diesel", yearMin:2000, yearMax:2015,
+    produit:"Shell Helix Ultra 5W-40 SN Plus", viscosité:"5W-40",
+    normes:"VW 505.01 · ACEA B4 · API CF", vidange:"15 000 km ou 1 an",
+    complement:"Spirax S2 G 80W-90",
+    raison:"Norme VW 505.01 pour les TDI ancienne génération SEAT/Škoda.",
+    alerteProduit: null },
+
+  // ════════════════════════════════
+  // BMW / MINI
+  // ════════════════════════════════
+  { brands:["BMW","MINI"], engine:"essence", yearMin:2019, yearMax:2099,
+    produit:"Shell Helix Ultra ECT C2/C3 0W-30", viscosité:"0W-30",
     normes:"BMW LL-17 FE+ · ACEA C5 · API SN PLUS", vidange:"30 000 km ou 2 ans",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Approbation BMW Longlife-17 FE+ (norme la plus récente BMW) pour les moteurs B48/B58/S58 de dernière génération. Viscosité 0W-30 imposée par BMW pour les intervalles Longlife et les économies de carburant maximales." },
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Le constructeur BMW spécifie une viscosité 0W-30 approuvée LL-17 FE+. Le produit Shell Helix Ultra ECT C2/C3 0W-30 est la référence disponible au Maroc la plus proche.",
+    alerteProduit:"Shell Helix Ultra 0W-30 (BMW LL-17 FE+)",
+    alerteRaison:"BMW préconise idéalement le Shell Helix Ultra 0W-30 portant l'approbation BMW Longlife-17 FE+. Ce produit n'est pas au catalogue Maroc. Le Shell Helix Ultra ECT C2/C3 0W-30 est la meilleure alternative disponible (ACEA C2/C3, compatible 0W-30)." },
 
-  { brands:["BMW","MINI"], models:["Série 1 F20","Série 2 F22","Série 3 F30","Série 5 F10","X1 F48","X3 F25","X5 F15","Mini One/Cooper R56/F55/F56","Mini Cooper S","Mini Countryman F60","Mini Clubman F54"], engine:"essence", yearMin:2011, yearMax:2018,
-    produit:"Shell Helix Ultra 5W-30", viscosité:"5W-30",
+  { brands:["BMW","MINI"], engine:"essence", yearMin:2011, yearMax:2018,
+    produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
     normes:"BMW LL-01 · ACEA A3/B4 · API SN", vidange:"20 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Approbation BMW Longlife-01 pour les moteurs N20/N55/N57 de la génération F. Stabilité thermique indispensable pour les grandes capacités de vidange demandées par BMW." },
+    complement:"Spirax S2 G 80W-90",
+    raison:"BMW LL-01 pour les moteurs N-series (F-series). Le Shell Helix Ultra ECT C3 5W-30 est l'alternative 5W-30 disponible au Maroc.",
+    alerteProduit:"Shell Helix Ultra 5W-30 (BMW LL-01)",
+    alerteRaison:"BMW recommande idéalement Shell Helix Ultra 5W-30 avec approbation BMW LL-01 spécifique. Ce produit exact n'est pas au catalogue Maroc. Le Shell Helix Ultra ECT C3 5W-30 ou HX8 ECT 5W-30 C3 sont les meilleures alternatives disponibles." },
 
-  { brands:["BMW"], models:["Série 3 E90/E92","Série 5 E60","X3 E83","X5 E70","Z4 E89","M3 E92"], engine:"essence", yearMin:2004, yearMax:2012,
-    produit:"Shell Helix Ultra 5W-30", viscosité:"5W-30",
+  { brands:["BMW","MINI"], engine:"essence", yearMin:2000, yearMax:2010,
+    produit:"Shell Helix Ultra 5W-40 SN Plus", viscosité:"5W-40",
     normes:"BMW LL-01 · ACEA A3/B4 · API SN", vidange:"20 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"BMW Longlife-01 pour les moteurs N46/N52/S65 de la série E. Excellente résistance à l'oxydation pour les circuits de lubrification des moteurs BMW à haute température de fonctionnement." },
+    complement:"Spirax S2 G 80W-90",
+    raison:"Pour les moteurs BMW E-series (M52/M54/M56/N46/N52), la viscosité 5W-40 est recommandée. Disponible au Maroc.",
+    alerteProduit: null },
 
-  { brands:["BMW","MINI"], models:["Série 3 G20","Série 5 G30","X3 G01","X5 G05","Mini Cooper D F56"], engine:"diesel", yearMin:2018, yearMax:2099,
+  { brands:["BMW","MINI"], engine:"diesel", yearMin:2015, yearMax:2099,
     produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
     normes:"BMW LL-04 · ACEA C3 · API CF", vidange:"25 000 km ou 2 ans",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"BMW LL-04 pour les diesel B47/B57 Euro 6d avec AdBlue et FAP. Formule Low-SAPS indispensable pour ne pas détruire le FAP et le catalyseur SCR des diesel BMW récents." },
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"BMW LL-04 pour les diesel B47/B57 Euro 6 avec FAP/SCR. Le Shell Helix Ultra ECT C3 5W-30 est disponible au Maroc et répond à la norme C3 Low-SAPS exigée.",
+    alerteProduit: null },
 
-  // ── MERCEDES-BENZ ─────────────────────────────────────────
-  { brands:["Mercedes-Benz"], models:["Classe A W177","Classe B W247","Classe C W206","Classe E W213","Classe S W223","CLA C118","CLS C257","EQA","EQB","EQC","EQE","EQS","GLA H247","GLB","GLC X254","GLE V167","GLS X167","AMG GT II"], engine:"essence", yearMin:2018, yearMax:2099,
-    produit:"Shell Helix Ultra 0W-20", viscosité:"0W-20",
+  { brands:["BMW","MINI"], engine:"diesel", yearMin:2000, yearMax:2014,
+    produit:"Shell Helix HX8 ECT 5W-30 C3", viscosité:"5W-30",
+    normes:"BMW LL-04 · ACEA C3 · API CF", vidange:"20 000 km ou 1 an",
+    complement:"Spirax S2 G 80W-90",
+    raison:"Norme BMW LL-04 pour les diesel ancienne génération. Shell HX8 ECT 5W-30 C3 disponible au Maroc.",
+    alerteProduit: null },
+
+  // ════════════════════════════════
+  // MERCEDES-BENZ
+  // ════════════════════════════════
+  { brands:["Mercedes-Benz"], engine:"essence", yearMin:2018, yearMax:2099,
+    produit:"Shell Helix Ultra ECT C6 0W-20", viscosité:"0W-20",
     normes:"MB 229.71 · ACEA C5 · API SP", vidange:"25 000 km ou 1 an",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme MB 229.71 (dernière génération Mercedes 2018+) pour les moteurs M264/M256. Viscosité 0W-20 obligatoire pour respecter les intervalles d'entretien flexible Mercedes et réduire la consommation de CO₂." },
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Mercedes spécifie la viscosité 0W-20 (MB 229.71) pour les moteurs M264/M256 2018+. Le Shell Helix Ultra ECT C6 0W-20 est la référence 0W-20 disponible au catalogue Shell Maroc.",
+    alerteProduit:"Shell Helix Ultra 0W-20 (MB 229.71)",
+    alerteRaison:"Mercedes recommande idéalement la Shell Helix Ultra 0W-20 portant l'approbation spécifique MB 229.71. Ce produit n'est pas au catalogue Maroc. Le Shell Helix Ultra ECT C6 0W-20 (ACEA C5, API SP) est la meilleure alternative disponible." },
 
-  { brands:["Mercedes-Benz"], models:["Classe C W205","Classe E W212","Classe S W222","CLA C117","GLC X253","GLE W166","Vito W447","Sprinter W907","Citan"], engine:"essence", yearMin:2013, yearMax:2017,
-    produit:"Shell Helix Ultra 5W-40", viscosité:"5W-40",
+  { brands:["Mercedes-Benz"], engine:"essence", yearMin:2000, yearMax:2017,
+    produit:"Shell Helix Ultra 5W-40 SN Plus", viscosité:"5W-40",
     normes:"MB 229.5 · ACEA A3/B4 · API SN", vidange:"15 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Norme MB 229.5 pour les moteurs M270/M274 de la génération W205/W212. Protection robuste des moteurs Mercedes à allumage direct (CGI) contre les dépôts sur soupapes d'admission." },
+    complement:"Spirax S2 G 80W-90",
+    raison:"Norme MB 229.5 pour les moteurs Mercedes essence ancienne génération (M270/M274/M156). Disponible au Maroc.",
+    alerteProduit: null },
 
-  { brands:["Mercedes-Benz"], models:["Classe C W206","Classe E W213","GLE V167","GLS X167","Sprinter W907"], engine:"diesel", yearMin:2018, yearMax:2099,
+  { brands:["Mercedes-Benz"], engine:"diesel", yearMin:2018, yearMax:2099,
     produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
     normes:"MB 229.52 · ACEA C3 · API CF", vidange:"25 000 km ou 1 an",
-    complement:"Shell Spirax S6 AXME 75W-90",
-    raison:"Norme MB 229.52 pour les diesel OM654/OM656 avec BlueTEC SCR et FAP. Formule Low-SAPS nécessaire pour ne pas empoisonner le catalyseur SCR et le FAP des moteurs diesel Mercedes récents." },
+    complement:"Spirax S6 AXME 75W-90",
+    raison:"Norme MB 229.52 pour les diesel OM654/OM656 avec BlueTEC SCR et FAP. Low-SAPS disponible au Maroc.",
+    alerteProduit: null },
 
-  { brands:["Mercedes-Benz"], models:["Classe C W204/W205","Classe E W211/W212","Classe ML W164","Vito W639"], engine:"diesel", yearMin:2004, yearMax:2017,
-    produit:"Shell Helix Ultra 5W-40", viscosité:"5W-40",
+  { brands:["Mercedes-Benz"], engine:"diesel", yearMin:2000, yearMax:2017,
+    produit:"Shell Helix Ultra 5W-40 SN Plus", viscosité:"5W-40",
     normes:"MB 229.5 · ACEA B4 · API CF", vidange:"15 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Norme MB 229.5 pour les diesel CDI OM651/OM642 de génération précédente. Protection des injecteurs common rail Bosch et du turbocompresseur à géométrie variable des moteurs CDI Mercedes." },
+    complement:"Spirax S2 G 80W-90",
+    raison:"Norme MB 229.5 pour les diesel CDI OM651/OM642 ancienne génération. Disponible au Maroc.",
+    alerteProduit: null },
 
-  // ── RENAULT / DACIA ────────────────────────────────────────
-  { brands:["Renault","Dacia"], models:["Clio V","Clio E-Tech","Mégane V","Mégane E-Tech","Captur II","Austral","Arkana","Espace VI","Koleos II","Kangoo III","Trafic III","Master IV"], engine:"essence", yearMin:2019, yearMax:2099,
-    produit:"Shell Helix Ultra ECT C2 0W-20", viscosité:"0W-20",
-    normes:"Renault RN 0700 · ACEA C2 · API SN PLUS", vidange:"20 000 km ou 2 ans",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme Renault RN 0700 pour les moteurs TCe 90/130/160 Gen2 et E-Tech hybrides. Viscosité 0W-20 requise par Renault pour les intervalles d'entretien variables et l'efficacité des hybrides E-Tech." },
+  // ════════════════════════════════
+  // RENAULT / DACIA
+  // ════════════════════════════════
+  { brands:["Renault","Dacia"], engine:"essence", yearMin:2019, yearMax:2099,
+    produit:"Shell Helix Ultra PRO AG 5W-30", viscosité:"5W-30",
+    normes:"Renault RN 0700 · PSA B71 2312 · ACEA C2 · API SN", vidange:"20 000 km ou 2 ans",
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Le Shell Helix Ultra PRO AG 5W-30 est une référence disponible au Maroc portant la norme Renault RN 0700 pour les moteurs TCe récents et hybrides E-Tech.",
+    alerteProduit:"Shell Helix Ultra ECT C2 0W-20",
+    alerteRaison:"Renault préconise idéalement une 0W-20 ACEA C2 (RN 0700) pour les TCe Gen2 et E-Tech 2019+. Cette viscosité n'est pas disponible au catalogue Maroc dans la gamme Helix. Le Shell Helix Ultra PRO AG 5W-30 (RN 0700) est la meilleure alternative disponible." },
 
-  { brands:["Renault","Dacia"], models:["Clio IV","Mégane IV","Captur I","Kadjar","Koleos I","Trafic III","Master III","Kangoo II","Duster II","Sandero III","Logan III","Jogger"], engine:"essence", yearMin:2012, yearMax:2018,
-    produit:"Shell Helix HX7 5W-40", viscosité:"5W-40",
-    normes:"Renault RN 0700 · ACEA A3/B4 · API SN", vidange:"10 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Norme Renault RN 0700 pour les moteurs TCe 115/130/150 et Energy TCe ancienne génération. Protection des arbres à cames et des turbocompresseurs des moteurs TCe à faible cylindrée." },
+  { brands:["Renault","Dacia"], engine:"essence", yearMin:2012, yearMax:2018,
+    produit:"Shell Helix HX7 10W-40 SN Plus", viscosité:"10W-40",
+    normes:"Renault RN 0700 · ACEA A3/B4 · API SN PLUS", vidange:"10 000 km ou 1 an",
+    complement:"Spirax S2 G 80W-90",
+    raison:"Pour les moteurs TCe ancienne génération Renault/Dacia, le Shell Helix HX7 10W-40 est largement disponible au Maroc et adapté aux conditions climatiques marocaines.",
+    alerteProduit:"Shell Helix HX7 5W-40",
+    alerteRaison:"Renault recommande idéalement une viscosité 5W-40 pour ces moteurs en conditions hivernales. Le Shell HX7 5W-40 n'est pas au catalogue Maroc. Le HX7 10W-40 est l'alternative disponible, parfaitement adaptée au climat marocain." },
 
-  { brands:["Renault","Dacia"], models:["Clio V","Mégane V","Captur II","Austral","Kangoo III","Trafic III","Master IV"], engine:"diesel", yearMin:2019, yearMax:2099,
-    produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
+  { brands:["Renault","Dacia"], engine:"diesel", yearMin:2019, yearMax:2099,
+    produit:"Shell Helix Ultra PRO AR-L 5W-30", viscosité:"5W-30",
     normes:"Renault RN 0720 · ACEA C3 · API CF", vidange:"20 000 km ou 2 ans",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme Renault RN 0720 pour les diesel Blue dCi 115/150 avec FAP et SCR AdBlue. Low-SAPS pour protéger le FAP et le catalyseur SCR des moteurs diesel Renault Euro 6d." },
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Le Shell Helix Ultra PRO AR-L 5W-30 porte la norme Renault RN 0720. Disponible au Maroc en fût 209L — produit idéal pour les diesel Blue dCi avec FAP/SCR.",
+    alerteProduit: null },
 
-  { brands:["Renault","Dacia"], models:["Clio IV","Mégane IV","Captur I","Kadjar","Trafic III","Master III","Kangoo II","Duster I/II","Sandero II","Logan II"], engine:"diesel", yearMin:2010, yearMax:2018,
-    produit:"Shell Helix HX7 AV 5W-30", viscosité:"5W-30",
+  { brands:["Renault","Dacia"], engine:"diesel", yearMin:2010, yearMax:2018,
+    produit:"Shell Helix HX8 ECT 5W-30 C3", viscosité:"5W-30",
     normes:"Renault RN 0710 · ACEA B4 · API CF", vidange:"10 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Norme Renault RN 0710 pour les diesel dCi K9K/R9M ancienne génération. Protection des injecteurs piezo et du turbocompresseur VNT des moteurs dCi Renault." },
+    complement:"Spirax S2 G 80W-90",
+    raison:"Pour les diesel dCi ancienne génération Renault/Dacia, le Shell HX8 ECT 5W-30 C3 disponible au Maroc assure la protection des injecteurs et du turbo.",
+    alerteProduit:"Shell Helix HX7 AV 5W-30",
+    alerteRaison:"Renault préconise idéalement le Shell HX7 AV 5W-30 (RN 0710 spécifique). Ce produit n'est pas au catalogue Maroc. Le Shell HX8 ECT 5W-30 C3 est la meilleure alternative disponible." },
 
-  // ── PEUGEOT / CITROËN / DS (groupe PSA / Stellantis) ─────
-  { brands:["Peugeot","Citroën","DS Automobiles"], models:["208 II","308 III","408","508 II","2008 II","3008 II","5008 II","Rifter","Partner III","Expert III","C3 III","C4 III","C5 Aircross","C5 X","DS 3 Crossback","DS 4","DS 7 Crossback","DS 9"], engine:"essence", yearMin:2019, yearMax:2099,
-    produit:"Shell Helix Ultra ECT C2 0W-30", viscosité:"0W-30",
+  { brands:["Renault","Dacia"], engine:"essence", yearMin:1990, yearMax:2011,
+    produit:"Shell Helix HX5 15W-40 SL CF", viscosité:"15W-40",
+    normes:"API SL · ACEA A3/B3", vidange:"7 500 km ou 1 an",
+    complement:"Spirax S2 G 80W-90",
+    raison:"Pour les anciens moteurs Renault/Dacia atmosphériques, le HX5 15W-40 est la référence semi-synthétique disponible au Maroc.",
+    alerteProduit: null },
+
+  // ════════════════════════════════
+  // PEUGEOT / CITROËN / DS / OPEL (Stellantis)
+  // ════════════════════════════════
+  { brands:["Peugeot","Citroën","DS Automobiles","Opel / Vauxhall"], engine:"essence", yearMin:2019, yearMax:2099,
+    produit:"Shell Helix Ultra PRO AG 5W-30", viscosité:"5W-30",
     normes:"PSA B71 2312 · ACEA C2 · API SN", vidange:"20 000 km ou 2 ans",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme PSA B71 2312 pour les moteurs PureTech 100/130/155/180 et Hybrid 225/300. Viscosité C2 Low-SAPS obligatoire pour protéger les systèmes de post-traitement des PureTech à très forte sollicitation." },
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Le Shell Helix Ultra PRO AG 5W-30 porte la norme PSA B71 2312, disponible au Maroc. Recommandé pour les moteurs PureTech 100/130/155/180 récents.",
+    alerteProduit: null },
 
-  { brands:["Peugeot","Citroën","DS Automobiles"], models:["208 I","308 II","508 I","2008 I","3008 I","5008 I","C3 II","C4 I/II","C4 Picasso II","C5 II","Berlingo II","DS 3","DS 4","DS 5"], engine:"essence", yearMin:2010, yearMax:2018,
-    produit:"Shell Helix HX7 5W-40", viscosité:"5W-40",
-    normes:"PSA B71 2296 · ACEA A3/B4 · API SN", vidange:"10 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Norme PSA B71 2296 pour les moteurs EP6/EP8 et THP ancienne génération. Protection des arbres à cames VVT-i et des guides de soupapes des moteurs Prince PSA." },
+  { brands:["Peugeot","Citroën","DS Automobiles","Opel / Vauxhall"], engine:"essence", yearMin:2005, yearMax:2018,
+    produit:"Shell Helix HX7 10W-40 SN Plus", viscosité:"10W-40",
+    normes:"PSA B71 2296 · ACEA A3/B4 · API SN PLUS", vidange:"10 000 km ou 1 an",
+    complement:"Spirax S2 G 80W-90",
+    raison:"Pour les moteurs EP6/THP ancienne génération PSA, le HX7 10W-40 est disponible au Maroc. Adapté au climat marocain.",
+    alerteProduit:"Shell Helix HX7 5W-40",
+    alerteRaison:"PSA recommande idéalement une 5W-40 pour ces moteurs. Le HX7 5W-40 n'est pas au catalogue Maroc. Le HX7 10W-40 SN Plus est l'alternative disponible, adaptée aux températures marocaines." },
 
-  { brands:["Peugeot","Citroën","DS Automobiles"], models:["208 II","308 III","508 II","2008 II","3008 II","5008 II","C3 III","C4 III","C5 Aircross","DS 7","Berlingo III","Partner III","Expert III","Boxer"], engine:"diesel", yearMin:2019, yearMax:2099,
+  { brands:["Peugeot","Citroën","DS Automobiles","Opel / Vauxhall"], engine:"diesel", yearMin:2019, yearMax:2099,
     produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
     normes:"PSA B71 2290 / B71 2312 · ACEA C3 · API CF", vidange:"20 000 km ou 2 ans",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme PSA Stellantis pour les diesel BlueHDi DV5/DW10 avec FAP et SCR. Low-SAPS impératif pour ne pas détruire le filtre à particules des diesel PSA Euro 6d." },
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Le Shell Helix Ultra ECT C3 5W-30 répond aux normes PSA Stellantis pour les diesel BlueHDi avec FAP/SCR. Disponible au Maroc.",
+    alerteProduit: null },
 
-  { brands:["Peugeot","Citroën","DS Automobiles"], models:["208 I","308 I/II","508 I","2008 I","3008 I","C3 II","C4 I/II","C5 I/II","Berlingo II","Partner II"], engine:"diesel", yearMin:2005, yearMax:2018,
-    produit:"Shell Helix HX7 AV 5W-30", viscosité:"5W-30",
+  { brands:["Peugeot","Citroën","DS Automobiles","Opel / Vauxhall"], engine:"diesel", yearMin:2000, yearMax:2018,
+    produit:"Shell Helix HX8 ECT 5W-30 C3", viscosité:"5W-30",
     normes:"PSA B71 2290 · ACEA B4 · API CF", vidange:"10 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Norme PSA B71 2290 pour les diesel HDi DV6C/DW10 ancienne génération. Protection des injecteurs common rail Delphi et Siemens et du turbocompresseur VVT des moteurs HDi." },
+    complement:"Spirax S2 G 80W-90",
+    raison:"Pour les diesel HDi ancienne génération, le Shell HX8 ECT 5W-30 C3 est disponible au Maroc et protège les injecteurs common rail PSA.",
+    alerteProduit:"Shell Helix HX7 AV 5W-30",
+    alerteRaison:"PSA préconise idéalement le HX7 AV 5W-30 (B71 2290 spécifique). Ce produit n'est pas au catalogue Maroc. Le HX8 ECT 5W-30 C3 est la meilleure alternative disponible." },
 
-  // ── FIAT / ALFA / LANCIA (Stellantis) ─────────────────────
-  { brands:["Fiat","Alfa Romeo","Lancia"], models:["500 312","500X 334","500L 330","Panda III","Tipo 356","Doblo II","Giulietta 940","Giulia 952","Stelvio 949","Tonale","Ypsilon 846"], engine:"essence", yearMin:2014, yearMax:2099,
-    produit:"Shell Helix Ultra ECT C2 0W-30", viscosité:"0W-30",
+  // ════════════════════════════════
+  // FIAT / ALFA ROMEO / LANCIA
+  // ════════════════════════════════
+  { brands:["Fiat","Alfa Romeo","Lancia"], engine:"essence", yearMin:2014, yearMax:2099,
+    produit:"Shell Helix Ultra PRO AG 5W-30", viscosité:"5W-30",
     normes:"Fiat 9.55535-GS1 · PSA B71 2312 · ACEA C2", vidange:"20 000 km ou 1 an",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme Fiat 9.55535-GS1 pour les moteurs FireFly 1.0/1.2/1.4 Turbo et JTDM récents. Viscosité C2 Low-SAPS pour protéger les systèmes GPF/FAP des moteurs Stellantis." },
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Le Shell Helix Ultra PRO AG 5W-30 (PSA B71 2312) est compatible avec les normes Fiat/Alfa récentes. Disponible au Maroc.",
+    alerteProduit: null },
 
-  { brands:["Fiat","Alfa Romeo","Lancia"], models:["500 312","Panda III","Tipo 356","Doblo II","Ducato III","Giulietta 940","Giulia 952","Stelvio 949"], engine:"diesel", yearMin:2012, yearMax:2099,
+  { brands:["Fiat","Alfa Romeo","Lancia"], engine:"diesel", yearMin:2012, yearMax:2099,
     produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
     normes:"Fiat 9.55535-S3 · ACEA C3 · API CF", vidange:"20 000 km ou 1 an",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme Fiat 9.55535-S3 pour les diesel MultiJet II et JTDm avec FAP. Low-SAPS pour protéger le filtre à particules et le système SCR des diesel Stellantis Euro 6." },
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Norme Fiat 9.55535-S3 pour les diesel MultiJet II avec FAP. Shell Helix Ultra ECT C3 5W-30 disponible au Maroc.",
+    alerteProduit: null },
 
-  // ── OPEL / VAUXHALL ───────────────────────────────────────
-  { brands:["Opel / Vauxhall"], models:["Astra L","Crossland X","Grandland X","Mokka B","Mokka-e","Zafira C","Vivaro C","Movano B"], engine:"essence", yearMin:2018, yearMax:2099,
-    produit:"Shell Helix Ultra ECT C2 0W-30", viscosité:"0W-30",
-    normes:"PSA B71 2312 / GM LL-B-025 · ACEA C2 · API SN", vidange:"20 000 km ou 1 an",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme PSA/GM pour les moteurs PureTech des Opel du groupe Stellantis. Même spécification C2 que les moteurs Peugeot/Citroën de la même famille." },
+  { brands:["Fiat","Alfa Romeo","Lancia"], engine:"essence", yearMin:1990, yearMax:2013,
+    produit:"Shell Helix HX7 10W-40 SN Plus", viscosité:"10W-40",
+    normes:"API SN · ACEA A3/B4", vidange:"10 000 km ou 1 an",
+    complement:"Spirax S2 G 80W-90",
+    raison:"Pour les anciens moteurs Fiat/Alfa, le HX7 10W-40 est la référence semi-synthétique disponible au Maroc.",
+    alerteProduit: null },
 
-  { brands:["Opel / Vauxhall"], models:["Astra H/J/K","Corsa D/E","Insignia A/B","Mokka A","Zafira B"], engine:"essence", yearMin:2005, yearMax:2017,
-    produit:"Shell Helix Ultra 5W-30", viscosité:"5W-30",
-    normes:"GM LL-B-025 · ACEA A3/B4 · API SN", vidange:"10 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Norme GM Dexos2 / LL-B-025 pour les moteurs Z16XER/A16XER/A18XER et SIDI Opel. Protection des VVT et des chaînes de distribution des moteurs Opel." },
+  // ════════════════════════════════
+  // TOYOTA / LEXUS
+  // ════════════════════════════════
+  { brands:["Toyota","Lexus"], engine:"essence", yearMin:2018, yearMax:2099,
+    produit:"Shell Helix Ultra ECT C6 0W-20", viscosité:"0W-20",
+    normes:"Toyota 08880-80376 · ACEA A1/B1 · API SP ILSAC GF-6A", vidange:"15 000 km ou 1 an",
+    complement:"Spirax S5 CVT X",
+    raison:"Toyota exige la viscosité 0W-20 pour les moteurs Dynamic Force et hybrides THS. Le Shell Helix Ultra ECT C6 0W-20 est la référence 0W-20 disponible au catalogue Shell Maroc.",
+    alerteProduit:"Shell Helix Ultra 0W-20 (Toyota 08880-80376)",
+    alerteRaison:"Toyota préconise idéalement le Shell Helix Ultra 0W-20 avec approbation Toyota GF-6A/SP spécifique. Ce produit n'est pas au catalogue Maroc. Le Shell Helix Ultra ECT C6 0W-20 (ACEA C6, API SP) est la meilleure alternative disponible." },
 
-  { brands:["Opel / Vauxhall"], models:["Astra K/L","Insignia B","Grandland X","Vivaro C","Movano B"], engine:"diesel", yearMin:2015, yearMax:2099,
-    produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
-    normes:"PSA B71 2290 / GM Dexos2 · ACEA C3 · API CF", vidange:"15 000 km ou 1 an",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme PSA/GM Dexos2 pour les diesel CDTi avec FAP des Opel. Low-SAPS pour protéger les systèmes de dépollution des moteurs diesel Opel Euro 5/6." },
-
-  // ── TOYOTA / LEXUS ────────────────────────────────────────
-  { brands:["Toyota"], models:["Yaris IV/XP210","Yaris Cross","Yaris GR","Corolla E210","Corolla Cross","Prius XW60","Prius PHV","RAV4 XA50","RAV4 PHEV","C-HR NGX50 II","Aygo X","bZ4X","GR86 II","GR Supra"], engine:"essence", yearMin:2018, yearMax:2099,
-    produit:"Shell Helix Ultra 0W-20", viscosité:"0W-20",
-    normes:"Toyota 08880-80376 / 0W20 GF-6A · ACEA A1/B1 · API SP ILSAC GF-6A", vidange:"15 000 km ou 1 an",
-    complement:"Shell CVT Fluid (boîte CVT Toyota)",
-    raison:"Viscosité 0W-20 officiellement spécifiée par Toyota pour les moteurs Dynamic Force M20A/M15A-FXE et hybrides THS-II. Obligatoire pour les intervalles garantis Toyota et les hybrides série XW60." },
-
-  { brands:["Toyota","Lexus"], models:["Yaris GR","GR86 II","GR Supra DB","RC F FSB","LS F40/F50","GS GRL10"], engine:"essence", yearMin:2017, yearMax:2099,
-    produit:"Shell Helix Ultra Racing 10W-60", viscosité:"10W-60",
-    normes:"Toyota Gazoo Racing · ACEA A3/B4 · API SN", vidange:"8 000 – 10 000 km",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Huile haute performance recommandée pour les moteurs GR Sport et circuit. Protection optimale à très haute température pour les moteurs sportifs Toyota Gazoo Racing." },
-
-  { brands:["Toyota"], models:["Auris E150/E180","Corolla E140","Prius XW20/XW30","Avensis T25/T27","RAV4 XA30/XA40","Yaris XP90/XP130","Verso","Proace II","HiAce","Hilux VIII"], engine:"essence", yearMin:2006, yearMax:2017,
-    produit:"Shell Helix HX7 5W-30", viscosité:"5W-30",
-    normes:"Toyota 08880-80830 / ILSAC GF-4 · API SN · ACEA A3/B4", vidange:"10 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Recommandation Toyota pour les moteurs 1NR-FE/2NR-FE/2ZR-FE de génération précédente. Protection des systèmes VVT-i et VVT-iE dans les conditions climatiques variées." },
-
-  { brands:["Toyota"], models:["Prius XW20/XW30/XW50/XW60","Yaris Cross","Corolla XP210","RAV4 PHEV","Auris hybride","C-HR hybride"], engine:"hybride", yearMin:2008, yearMax:2099,
-    produit:"Shell Helix Ultra 0W-20", viscosité:"0W-20",
+  { brands:["Toyota","Lexus"], engine:"hybride", yearMin:2000, yearMax:2099,
+    produit:"Shell Helix Hybrid 0W-20 SP", viscosité:"0W-20",
     normes:"Toyota 08880-80376 · API SN PLUS · ILSAC GF-5 · ACEA A1/B1", vidange:"15 000 km",
-    complement:"Shell CVT Fluid",
-    raison:"Huile officielle Toyota pour tous les hybrides THS-II et THS-III. La viscosité 0W-20 ultra-légère est impérative pour minimiser les pertes mécaniques lors des multiples transitions moteur thermique/électrique." },
+    complement:"Spirax S5 CVT X",
+    raison:"Le Shell Helix Hybrid 0W-20 SP est spécifiquement formulé pour les véhicules hybrides et disponible au Maroc. Parfait pour tous les hybrides Toyota/Lexus THS-II et THS-III.",
+    alerteProduit: null },
 
-  { brands:["Toyota","Lexus"], models:["Avensis T27","Corolla E140/E150","RAV4 XA30/XA40","Land Cruiser J200","Hilux VIII","Proace II"], engine:"diesel", yearMin:2008, yearMax:2099,
+  { brands:["Toyota","Lexus"], engine:"essence", yearMin:2000, yearMax:2017,
+    produit:"Shell Helix HX7 10W-40 SN Plus", viscosité:"10W-40",
+    normes:"Toyota 08880-80830 · API SN · ACEA A3/B4", vidange:"10 000 km ou 1 an",
+    complement:"Spirax S2 G 80W-90",
+    raison:"Pour les moteurs Toyota ancienne génération (1NR/2ZR/1KD), le HX7 10W-40 est disponible au Maroc et adapté au climat chaud marocain.",
+    alerteProduit:"Shell Helix HX7 5W-30",
+    alerteRaison:"Toyota recommande idéalement une viscosité 5W-30 pour ces moteurs en conditions hivernales. Ce produit exact n'est pas au catalogue Maroc. Le HX7 10W-40 est l'alternative la plus adaptée aux conditions marocaines." },
+
+  { brands:["Toyota","Lexus"], engine:"diesel", yearMin:2000, yearMax:2099,
     produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
     normes:"Toyota 08880-80830 · ACEA C3 · API CF", vidange:"15 000 km ou 1 an",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Recommandation Toyota pour les diesel D-4D 2.0/2.2 avec FAP. Protection des injecteurs common rail haute pression Denso et du turbocompresseur VGT des diesels Toyota." },
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Recommandation Toyota pour les diesel D-4D avec FAP. Shell Helix Ultra ECT C3 5W-30 disponible au Maroc.",
+    alerteProduit: null },
 
-  { brands:["Lexus"], models:["CT 200h ZWA10","UX 250h ZA10","ES XV70","NX AZ20","RX XU50","UX 300e","RZ 450e"], engine:"hybride", yearMin:2010, yearMax:2099,
-    produit:"Shell Helix Ultra 0W-20", viscosité:"0W-20",
-    normes:"Toyota 08880-80376 · ILSAC GF-6A · API SP · ACEA A1/B1", vidange:"15 000 km",
-    complement:"Shell CVT Fluid",
-    raison:"Spécification Lexus (groupe Toyota) pour tous les hybrides multi-étapes. La viscosité 0W-20 est obligatoire pour le fonctionnement du système hybride Lexus et les intervalles d'entretien premium." },
+  { brands:["Toyota","Lexus"], engine:"sport", yearMin:2000, yearMax:2099,
+    produit:"Shell Helix Ultra Racing 10W-60", viscosité:"10W-60",
+    normes:"Toyota Gazoo Racing · ACEA A3/B4 · API SN", vidange:"8 000 – 10 000 km",
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Le Shell Helix Ultra Racing 10W-60 est disponible au Maroc (20L). Recommandé pour Toyota GR86, GR Yaris, GR Supra et Lexus RC F / IS F.",
+    alerteProduit: null },
 
-  // ── HONDA ─────────────────────────────────────────────────
-  { brands:["Honda"], models:["Civic FL","CR-V RW","HR-V RV","Jazz GR","Jazz e:HEV"], engine:"essence", yearMin:2018, yearMax:2099,
-    produit:"Shell Helix Ultra 0W-20", viscosité:"0W-20",
-    normes:"Honda 08221-99974 · API SN PLUS · ILSAC GF-5/GF-6A", vidange:"12 000 km ou 1 an",
-    complement:"Shell CVT Fluid Honda CVT",
-    raison:"Viscosité 0W-20 requise par Honda pour les moteurs VTEC Turbo L15B7/L13B et hybrides i-MMD. Indispensable pour respecter les intervalles de maintenance Honda et le fonctionnement des hybrides e:HEV." },
+  // ════════════════════════════════
+  // HONDA
+  // ════════════════════════════════
+  { brands:["Honda"], engine:"essence", yearMin:2018, yearMax:2099,
+    produit:"Shell Helix Ultra ECT C6 0W-20", viscosité:"0W-20",
+    normes:"Honda 08221-99974 · API SN PLUS · ILSAC GF-6A", vidange:"12 000 km ou 1 an",
+    complement:"Spirax S5 CVT X",
+    raison:"Honda requiert la viscosité 0W-20 pour les VTEC Turbo récents. Le Shell Helix Ultra ECT C6 0W-20 est disponible au Maroc.",
+    alerteProduit:"Shell Helix Ultra 0W-20 (Honda)",
+    alerteRaison:"Honda recommande idéalement la Shell Helix Ultra 0W-20 avec approbation Honda spécifique. Le Shell Helix Ultra ECT C6 0W-20 est la meilleure alternative disponible au Maroc." },
 
-  { brands:["Honda"], models:["Civic FK2/FK8","Civic Type R","Accord CR","CR-V RM","Jazz GK","NSX NC1"], engine:"essence", yearMin:2012, yearMax:2017,
-    produit:"Shell Helix HX7 5W-30", viscosité:"5W-30",
-    normes:"Honda HTO-06 · API SN · ACEA A3/B4", vidange:"10 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Norme Honda HTO-06 pour les moteurs VTEC R20A/K20C/K24A de génération précédente. Protection des arbres à cames DOHC VTEC à passages d'huile haute pression." },
+  { brands:["Honda"], engine:"essence", yearMin:1990, yearMax:2017,
+    produit:"Shell Helix HX7 10W-40 SN Plus", viscosité:"10W-40",
+    normes:"API SN · ACEA A3/B4 · Honda HTO-06", vidange:"10 000 km ou 1 an",
+    complement:"Spirax S2 G 80W-90",
+    raison:"Pour les moteurs VTEC Honda ancienne génération, le HX7 10W-40 est disponible au Maroc et bien adapté au climat chaud.",
+    alerteProduit:"Shell Helix HX7 5W-30",
+    alerteRaison:"Honda recommande idéalement une 5W-30 pour les VTEC atmosphériques. Ce produit n'est pas au catalogue Maroc. Le HX7 10W-40 SN Plus est l'alternative disponible, adaptée aux températures marocaines." },
 
-  // ── FORD ─────────────────────────────────────────────────
-  { brands:["Ford"], models:["Puma MK2","Kuga MK3","Focus MK4","Fiesta MK8","Mondeo MK5","Galaxy MK3","S-Max MK2","Transit Custom MK2","Transit MK8","Ranger T7"], engine:"essence", yearMin:2018, yearMax:2099,
-    produit:"Shell Helix Ultra ECT C2 0W-20", viscosité:"0W-20",
-    normes:"Ford WSS-M2C947-B1 · API SN PLUS · ILSAC GF-6A", vidange:"15 000 km ou 1 an",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme Ford WSS-M2C947-B1 pour les EcoBoost 1.0/1.5/2.0 de dernière génération. Viscosité 0W-20 requise par Ford pour les systèmes de gestion thermique et la réduction de CO₂." },
-
-  { brands:["Ford"], models:["Focus MK2/MK3","Fiesta MK6/MK7","Mondeo MK4","Kuga MK1/MK2","Transit Custom MK1","Transit MK7","Galaxy MK2","S-Max MK1"], engine:"essence", yearMin:2005, yearMax:2017,
-    produit:"Shell Helix HX7 5W-20", viscosité:"5W-20",
-    normes:"Ford WSS-M2C913-D · API SN · ACEA A1/B1", vidange:"10 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Norme Ford WSS-M2C913-D pour les moteurs Duratec/EcoBoost ancienne génération. Viscosité 5W-20 recommandée par Ford Europe pour les conditions normales d'utilisation." },
-
-  { brands:["Ford"], models:["Kuga MK3","Focus MK4","Transit Custom MK2","Transit MK8","Ranger T7"], engine:"diesel", yearMin:2018, yearMax:2099,
+  // ════════════════════════════════
+  // NISSAN / INFINITI
+  // ════════════════════════════════
+  { brands:["Nissan","Infiniti"], engine:"essence", yearMin:2015, yearMax:2099,
     produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
-    normes:"Ford WSS-M2C917-A · ACEA C3 · API CF", vidange:"20 000 km ou 1 an",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme Ford WSS-M2C917-A pour les EcoBlue 1.5/2.0 TDCi Euro 6 avec FAP. Low-SAPS pour protéger les systèmes SCR AdBlue et FAP des diesel Ford." },
+    normes:"Nissan 999MP-5W30P2 · API SN PLUS · ACEA A3/B4", vidange:"15 000 km ou 1 an",
+    complement:"Spirax S5 CVT X",
+    raison:"Pour les moteurs Nissan récents, le Shell Helix Ultra ECT C3 5W-30 est disponible au Maroc et assure la protection des systèmes VVEL.",
+    alerteProduit: null },
 
-  { brands:["Ford"], models:["Focus MK2/MK3","Mondeo MK4","Kuga MK1/MK2","Transit Custom MK1","Transit MK7"], engine:"diesel", yearMin:2005, yearMax:2017,
-    produit:"Shell Helix HX7 AV 5W-30", viscosité:"5W-30",
-    normes:"Ford WSS-M2C913-D · ACEA B3/B4 · API CF", vidange:"10 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Norme Ford WSS-M2C913-D pour les diesel TDCi Duratorq ancienne génération. Protection des injecteurs Delphi/Bosch et du turbocompresseur VGT des moteurs diesel Ford." },
+  { brands:["Nissan","Infiniti"], engine:"essence", yearMin:1990, yearMax:2014,
+    produit:"Shell Helix HX7 10W-40 SN Plus", viscosité:"10W-40",
+    normes:"API SN · ACEA A3/B4", vidange:"10 000 km ou 1 an",
+    complement:"Spirax S2 G 80W-90",
+    raison:"Pour les moteurs Nissan ancienne génération, le HX7 10W-40 est la référence semi-synthétique disponible au Maroc.",
+    alerteProduit: null },
 
-  // ── VOLVO ─────────────────────────────────────────────────
-  { brands:["Volvo"], models:["XC40 Recharge","C40","XC60 II","XC90 II","S60 III","S90 II","V60 II","V60 CC II","V90 II","V90 CC II","EX30","EX90"], engine:"essence", yearMin:2018, yearMax:2099,
-    produit:"Shell Helix Ultra 0W-20", viscosité:"0W-20",
-    normes:"Volvo VCC-RBS2AE · ACEA A1/B1 · API SN PLUS", vidange:"20 000 km ou 1 an",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme Volvo VCC-RBS2AE pour les moteurs Drive-E B3/B4/T5/T6 de dernière génération. La viscosité 0W-20 est obligatoire pour les intervalles d'entretien variable Volvo et les hybrides Recharge." },
-
-  { brands:["Volvo"], models:["XC40","XC60 I","XC70 II","XC90 I","S40 II","S60 II","S80 II","V40 II","V50","V60 I","V70 III"], engine:"essence", yearMin:2007, yearMax:2017,
-    produit:"Shell Helix Ultra 5W-30", viscosité:"5W-30",
-    normes:"Volvo VCC-RBS2AE · ACEA A3/B4 · API SN", vidange:"15 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Norme Volvo VCC-RBS2AE pour les moteurs B4164T/B4204T/B5254T ancienne génération. Excellente protection des turbocompresseurs et des VVT des moteurs Volvo à allumage par étincelle." },
-
-  { brands:["Volvo"], models:["XC60 II","XC90 II","V60 II","V90 II","S60 III","S90 II"], engine:"diesel", yearMin:2017, yearMax:2099,
+  { brands:["Nissan","Infiniti"], engine:"diesel", yearMin:2000, yearMax:2099,
     produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
-    normes:"Volvo VCC-RBS2AJ · ACEA C3 · API CF", vidange:"20 000 km ou 1 an",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme Volvo VCC-RBS2AJ pour les diesel D2/D3/D4/D5 Drive-E Euro 6 avec SCR/AdBlue. Protection du système de post-traitement et des injecteurs Common Rail haute pression." },
+    normes:"Nissan 999MP-CF5W30 · ACEA C3 · API CF", vidange:"15 000 km ou 1 an",
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Recommandation Nissan pour les diesel dCi avec FAP. Shell Helix Ultra ECT C3 5W-30 disponible au Maroc.",
+    alerteProduit: null },
 
-  // ── HYUNDAI / KIA / GENESIS ───────────────────────────────
-  { brands:["Hyundai","Kia","Genesis"], models:["Tucson NX4","Santa Fe MX5","Kona OS EV","Ioniq 5 NE","Ioniq 6 CE","Ioniq AE","EV6 CV","EV9 MV","GV60","GV70 JK1","GV80 JX1","i20 BC3","i30 CN7","Ceed CD II","Sportage NQ5","Sorento MQ4","Carnival KA4","Stinger CK"], engine:"essence", yearMin:2020, yearMax:2099,
-    produit:"Shell Helix Ultra 0W-20", viscosité:"0W-20",
-    normes:"Hyundai 04E00-00020 · API SP · ILSAC GF-6A · ACEA A1/B1", vidange:"15 000 km ou 1 an",
-    complement:"Shell CVT Fluid",
-    raison:"Viscosité 0W-20 recommandée par Hyundai/Kia pour les moteurs Smartstream T-GDI Nu/Theta III. Obligatoire pour les hybrides Hyundai TMED et les systèmes Stop & Start à démarrage fréquent." },
+  // ════════════════════════════════
+  // MAZDA / SUBARU / MITSUBISHI
+  // ════════════════════════════════
+  { brands:["Mazda"], engine:"essence", yearMin:2000, yearMax:2099,
+    produit:"Shell Helix Ultra ECT C6 0W-20", viscosité:"0W-20",
+    normes:"Mazda 0W-20 SN · API SP ILSAC GF-6A", vidange:"15 000 km ou 1 an",
+    complement:"Spirax S5 CVT X",
+    raison:"Mazda recommande la viscosité 0W-20 pour les SKYACTIV-G et SKYACTIV-X. Le Shell Helix Ultra ECT C6 0W-20 est disponible au Maroc.",
+    alerteProduit: null },
 
-  { brands:["Hyundai","Kia","Genesis"], models:["Tucson TL","Santa Fe TM","Kona OS","i30 PD","Ceed JD/CD","Sportage QL/QE","Sorento UM","Niro DE"], engine:"essence", yearMin:2014, yearMax:2019,
-    produit:"Shell Helix HX7 5W-30", viscosité:"5W-30",
+  { brands:["Subaru"], engine:"essence", yearMin:2000, yearMax:2099,
+    produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
+    normes:"Subaru SOA427V1410 · API SN · ACEA A3/B4", vidange:"12 000 km ou 1 an",
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Subaru recommande la 5W-30 pour les boxers FA/FB. Shell Helix Ultra ECT C3 5W-30 disponible au Maroc.",
+    alerteProduit: null },
+
+  { brands:["Mitsubishi"], engine:"essence", yearMin:2000, yearMax:2099,
+    produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
+    normes:"Mitsubishi DL0119B · API SN · ACEA A3/B4", vidange:"12 000 km ou 1 an",
+    complement:"Spirax S5 CVT X",
+    raison:"Recommandation Mitsubishi pour les moteurs MIVEC. Shell Helix Ultra ECT C3 5W-30 disponible au Maroc.",
+    alerteProduit: null },
+
+  // ════════════════════════════════
+  // HYUNDAI / KIA / GENESIS
+  // ════════════════════════════════
+  { brands:["Hyundai","Kia","Genesis"], engine:"essence", yearMin:2018, yearMax:2099,
+    produit:"Shell Helix Ultra ECT C6 0W-20", viscosité:"0W-20",
+    normes:"Hyundai 04E00-00020 · ACEA A1/B1 · API SP ILSAC GF-6A", vidange:"15 000 km ou 1 an",
+    complement:"Spirax S5 CVT X",
+    raison:"Hyundai/Kia recommande la viscosité 0W-20 pour les Smartstream récents. Le Shell Helix Ultra ECT C6 0W-20 est disponible au Maroc.",
+    alerteProduit:"Shell Helix Ultra 0W-20 (Hyundai)",
+    alerteRaison:"Hyundai recommande idéalement la Shell Helix Ultra 0W-20 avec approbation constructeur. Le Shell Helix Ultra ECT C6 0W-20 est la meilleure alternative disponible au Maroc." },
+
+  { brands:["Hyundai","Kia","Genesis"], engine:"essence", yearMin:1998, yearMax:2017,
+    produit:"Shell Helix HX7 10W-40 SN Plus", viscosité:"10W-40",
     normes:"Hyundai 04E00-00030 · API SN · ACEA A3/B4", vidange:"10 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Recommandation Hyundai/Kia pour les moteurs Gamma/Nu II de génération précédente. Protection des chaînes de distribution et des arbres à cames double des moteurs GDI coréens." },
+    complement:"Spirax S2 G 80W-90",
+    raison:"Pour les moteurs Hyundai/Kia ancienne génération, le HX7 10W-40 est disponible au Maroc.",
+    alerteProduit: null },
 
-  { brands:["Hyundai","Kia","Genesis"], models:["Tucson NX4","Santa Fe MX5","Sportage NQ5","Sorento MQ4","Staria","i20 N","i30 N"], engine:"diesel", yearMin:2018, yearMax:2099,
+  { brands:["Hyundai","Kia","Genesis"], engine:"diesel", yearMin:2000, yearMax:2099,
     produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
     normes:"Hyundai 04E00-00010 · ACEA C3 · API CF", vidange:"15 000 km ou 1 an",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme Hyundai/Kia pour les diesel CRDi R2.0 Euro 6 avec FAP et SCR. Protection du système d'injection haute pression (2 000 bar) et du catalyseur SCR urea des diesel coréens." },
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Recommandation Hyundai/Kia pour les diesel CRDi avec FAP. Shell Helix Ultra ECT C3 5W-30 disponible au Maroc.",
+    alerteProduit: null },
 
-  // ── NISSAN / INFINITI ─────────────────────────────────────
-  { brands:["Nissan","Infiniti"], models:["Qashqai J12","X-Trail T33","Leaf ZE1","Juke F16","Ariya","Micra K14"], engine:"essence", yearMin:2017, yearMax:2099,
-    produit:"Shell Helix Ultra 0W-20", viscosité:"0W-20",
-    normes:"Nissan 999MP-5W20P3 · API SN PLUS · ILSAC GF-6A", vidange:"15 000 km ou 1 an",
-    complement:"Shell CVT Fluid NS-3",
-    raison:"Viscosité 0W-20 recommandée par Nissan pour les moteurs HR13DDT et HR15DE récents. Optimise l'efficacité des boîtes CVT Xtronic et réduit la consommation des moteurs Renault-Nissan Alliance." },
+  // ════════════════════════════════
+  // VOLVO
+  // ════════════════════════════════
+  { brands:["Volvo"], engine:"essence", yearMin:2018, yearMax:2099,
+    produit:"Shell Helix Ultra ECT C6 0W-20", viscosité:"0W-20",
+    normes:"Volvo VCC-RBS2AE · ACEA A1/B1 · API SN PLUS", vidange:"20 000 km ou 1 an",
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Volvo exige la viscosité 0W-20 (VCC-RBS2AE) pour les Drive-E récents. Shell Helix Ultra ECT C6 0W-20 disponible au Maroc.",
+    alerteProduit:"Shell Helix Ultra 0W-20 (Volvo VCC-RBS2AE)",
+    alerteRaison:"Volvo recommande idéalement la Shell Helix Ultra 0W-20 avec approbation VCC-RBS2AE. Le Shell Helix Ultra ECT C6 0W-20 est la meilleure alternative disponible au Maroc." },
 
-  { brands:["Nissan","Infiniti"], models:["GT-R R35","370Z Z34","Qashqai J10/J11","X-Trail T31/T32","Micra K13","Navara D23"], engine:"essence", yearMin:2007, yearMax:2016,
-    produit:"Shell Helix Ultra 5W-30", viscosité:"5W-30",
-    normes:"Nissan 999MP-5W30P2 · API SN · ACEA A3/B4", vidange:"10 000 km ou 1 an",
-    complement:"Shell CVT Fluid NS-2",
-    raison:"Spécification Nissan pour les moteurs MR18DE/HR16DE/VR38DETT de génération précédente. Protection des systèmes CVTC (distribution variable continue) des moteurs Nissan." },
-
-  { brands:["Nissan","Infiniti"], models:["Qashqai J11/J12","X-Trail T32/T33","Navara D23"], engine:"diesel", yearMin:2014, yearMax:2099,
+  { brands:["Volvo"], engine:"essence", yearMin:2000, yearMax:2017,
     produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
-    normes:"Nissan 999MP-CF5W30-REN · ACEA C3 · API CF", vidange:"15 000 km ou 1 an",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Recommandation Nissan pour les diesel dCi 1.5/1.6/2.0 Euro 5/6. Protection des injecteurs Siemens/Delphi haute pression et du FAP des diesel Nissan-Renault." },
+    normes:"Volvo VCC-RBS2AE · ACEA A3/B4 · API SN", vidange:"15 000 km ou 1 an",
+    complement:"Spirax S2 G 80W-90",
+    raison:"Pour les moteurs Volvo ancienne génération (B4/B5), Shell Helix Ultra ECT C3 5W-30 disponible au Maroc.",
+    alerteProduit: null },
 
-  // ── MAZDA ─────────────────────────────────────────────────
-  { brands:["Mazda"], models:["Mazda3 BP","Mazda6 GL","CX-30 DM","CX-5 KF","CX-60 KH","MX-30 DR"], engine:"essence", yearMin:2018, yearMax:2099,
-    produit:"Shell Helix Ultra 0W-20", viscosité:"0W-20",
-    normes:"Mazda 0W-20 SP · API SP · ILSAC GF-6A · ACEA A1/B1", vidange:"15 000 km ou 1 an",
-    complement:"Shell CVT Fluid",
-    raison:"Viscosité 0W-20 obligatoire pour les moteurs SKYACTIV-G et SKYACTIV-X (HCCI). Le moteur SKYACTIV-X à allumage par compression exige impérativement cette viscosité pour son cycle thermodynamique innovant." },
+  { brands:["Volvo"], engine:"diesel", yearMin:2000, yearMax:2099,
+    produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
+    normes:"Volvo VCC-RBS2AJ · ACEA C3 · API CF", vidange:"20 000 km ou 1 an",
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Norme Volvo VCC-RBS2AJ pour les diesel Drive-E avec SCR/AdBlue. Shell Helix Ultra ECT C3 5W-30 disponible au Maroc.",
+    alerteProduit: null },
 
-  { brands:["Mazda"], models:["Mazda2 DJ","Mazda3 BL/BM","Mazda6 GH/GJ","CX-3 DK","CX-5 KE","MX-5 NC/ND"], engine:"essence", yearMin:2010, yearMax:2017,
-    produit:"Shell Helix HX7 5W-30", viscosité:"5W-30",
-    normes:"Mazda 5W-30 SN · API SN · ACEA A3/B4", vidange:"10 000 km ou 1 an",
-    complement:"Shell Spirax S4 G 75W-90",
-    raison:"Recommandation Mazda pour les moteurs SKYACTIV-G 1.3/1.5/2.0/2.5 ancienne génération. Protection des parois de cylindres à faible friction SKYACTIV." },
+  // ════════════════════════════════
+  // FORD
+  // ════════════════════════════════
+  { brands:["Ford"], engine:"essence", yearMin:2018, yearMax:2099,
+    produit:"Shell Helix Ultra ECT C6 0W-20", viscosité:"0W-20",
+    normes:"Ford WSS-M2C947-B1 · API SN PLUS · ILSAC GF-6A", vidange:"15 000 km ou 1 an",
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Ford préconise la viscosité 0W-20 pour les EcoBoost récents. Shell Helix Ultra ECT C6 0W-20 disponible au Maroc.",
+    alerteProduit:"Shell Helix Ultra ECT C2 0W-20",
+    alerteRaison:"Ford recommande idéalement la Shell Helix Ultra ECT C2 0W-20 (WSS-M2C947-B1). Le Shell Helix Ultra ECT C6 0W-20 est la référence 0W-20 disponible au Maroc, proche en spécifications." },
 
-  // ── SUBARU ────────────────────────────────────────────────
-  { brands:["Subaru"], models:["Impreza GT","WRX VA","WRX STI VAB","BRZ ZD8","Forester SK","XV GT","Outback BT","Legacy BS"], engine:"essence", yearMin:2014, yearMax:2099,
-    produit:"Shell Helix Ultra 5W-30", viscosité:"5W-30",
-    normes:"Subaru SOA427V1410 / API SN · ACEA A3/B4", vidange:"12 000 km ou 1 an",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme Subaru pour les moteurs boxer FB20/FB25/FA24 à plat. La viscosité 5W-30 est impérative dans les moteurs boxer horizontaux : l'huile doit lubrifier des axes perpendiculaires à la gravité." },
+  { brands:["Ford"], engine:"essence", yearMin:2000, yearMax:2017,
+    produit:"Shell Helix HX7 10W-40 SN Plus", viscosité:"10W-40",
+    normes:"Ford WSS-M2C913-D · API SN · ACEA A3/B4", vidange:"10 000 km ou 1 an",
+    complement:"Spirax S2 G 80W-90",
+    raison:"Pour les moteurs Duratec/EcoBoost anciens, le HX7 10W-40 est disponible au Maroc.",
+    alerteProduit:"Shell Helix HX7 5W-20 ou 5W-30",
+    alerteRaison:"Ford recommande idéalement une viscosité 5W-20 ou 5W-30 pour ces moteurs. Ces produits ne sont pas au catalogue Maroc. Le HX7 10W-40 est l'alternative disponible, bien adaptée au climat marocain." },
 
-  // ── PORSCHE ───────────────────────────────────────────────
-  { brands:["Porsche"], models:["911 992","Cayenne 9YA","Macan MK2","Panamera 971","Taycan"], engine:"essence", yearMin:2018, yearMax:2099,
-    produit:"Shell Helix Ultra 0W-40 PurePlus", viscosité:"0W-40",
-    normes:"Porsche C20 · ACEA A3/B4 · API SN PLUS", vidange:"20 000 km ou 2 ans",
-    complement:"Shell Spirax S6 GXME 75W-80 (PDK)",
-    raison:"Approbation officielle Porsche C20 pour les moteurs EA839 Turbo et moteurs 911 flat-6. L'huile PurePlus (synthèse à partir de gaz naturel) garantit une pureté et une stabilité inégalées pour les moteurs Porsche haute performance." },
+  { brands:["Ford"], engine:"diesel", yearMin:2018, yearMax:2099,
+    produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
+    normes:"Ford WSS-M2C917-A · ACEA C3 · API CF", vidange:"20 000 km ou 1 an",
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Norme Ford WSS-M2C917-A pour les EcoBlue avec FAP. Shell Helix Ultra ECT C3 5W-30 disponible au Maroc.",
+    alerteProduit: null },
 
-  { brands:["Porsche"], models:["911 991/997","Cayenne 92A","Boxster 981/718","Cayman 981/718","Macan 95B","Panamera 970"], engine:"essence", yearMin:2004, yearMax:2017,
-    produit:"Shell Helix Ultra 5W-40", viscosité:"5W-40",
-    normes:"Porsche A40 · ACEA A3/B4 · API SN", vidange:"15 000 km ou 1 an",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme Porsche A40 pour les moteurs MA1.01/MA1.01x flat-6 et V8. Viscosité 5W-40 recommandée par Porsche pour les hautes températures de fonctionnement de ces moteurs à refroidissement air/eau." },
+  { brands:["Ford"], engine:"diesel", yearMin:2000, yearMax:2017,
+    produit:"Shell Helix HX8 ECT 5W-30 C3", viscosité:"5W-30",
+    normes:"Ford WSS-M2C913-D · ACEA B3/B4 · API CF", vidange:"10 000 km ou 1 an",
+    complement:"Spirax S2 G 80W-90",
+    raison:"Pour les diesel TDCi ancienne génération Ford, le Shell HX8 ECT 5W-30 C3 est disponible au Maroc.",
+    alerteProduit: null },
 
-  // ── LAND ROVER / JAGUAR ───────────────────────────────────
-  { brands:["Land Rover"], models:["Defender L663","Discovery 5","Discovery Sport L550","Range Rover L405","Range Rover Sport L494","Range Rover Evoque L551","Range Rover Velar"], engine:"essence", yearMin:2017, yearMax:2099,
-    produit:"Shell Helix Ultra 0W-20", viscosité:"0W-20",
+  // ════════════════════════════════
+  // LAND ROVER / JAGUAR
+  // ════════════════════════════════
+  { brands:["Land Rover","Jaguar"], engine:"essence", yearMin:2017, yearMax:2099,
+    produit:"Shell Helix Ultra ECT C6 0W-20", viscosité:"0W-20",
     normes:"JLR STJLR.51.5122 · ACEA C5 · API SP", vidange:"21 000 km ou 1 an",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Spécification officielle JLR STJLR.51.5122 pour les moteurs Ingenium AJ200/AJ300 turbo. La viscosité 0W-20 est obligatoire pour respecter les intervalles de service étendu Land Rover et minimiser la consommation." },
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"JLR exige la viscosité 0W-20 pour les moteurs Ingenium récents. Shell Helix Ultra ECT C6 0W-20 disponible au Maroc.",
+    alerteProduit:"Shell Helix Ultra 0W-20 (JLR STJLR.51.5122)",
+    alerteRaison:"JLR recommande idéalement la Shell Helix Ultra 0W-20 avec approbation JLR spécifique. Le Shell Helix Ultra ECT C6 0W-20 est la meilleure alternative disponible au Maroc." },
 
-  { brands:["Jaguar"], models:["F-Pace X761","E-Pace X540","XE X760","XF X260","F-Type X152"], engine:"essence", yearMin:2016, yearMax:2099,
-    produit:"Shell Helix Ultra 0W-20", viscosité:"0W-20",
-    normes:"JLR STJLR.51.5122 · ACEA C5 · API SP", vidange:"21 000 km ou 1 an",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme JLR commune pour tous les moteurs Ingenium Jaguar. La viscosité 0W-20 ACEA C5 assure la protection maximum des moteurs turbo Jaguar tout en respectant les objectifs CO₂ constructeur." },
-
-  { brands:["Land Rover","Jaguar"], models:["Defender L663","Discovery 5","Range Rover L405","Range Rover Sport L494","XF X260","XE X760"], engine:"diesel", yearMin:2017, yearMax:2099,
+  { brands:["Land Rover","Jaguar"], engine:"diesel", yearMin:2000, yearMax:2099,
     produit:"Shell Helix Ultra ECT C3 5W-30", viscosité:"5W-30",
     normes:"JLR STJLR.51.5006 · ACEA C3 · API CF", vidange:"21 000 km ou 1 an",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Norme JLR STJLR.51.5006 pour les diesel Ingenium 2.0d/3.0d AJ200D/AJ300D avec FAP et SCR. Protection des injecteurs piezoélectriques haute pression et du FAP des moteurs diesel JLR." },
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Norme JLR pour les diesel Ingenium avec FAP/SCR. Shell Helix Ultra ECT C3 5W-30 disponible au Maroc.",
+    alerteProduit: null },
 
-  // ── FERRARI / LAMBORGHINI / MASERATI / BENTLEY / ROLLS / ASTON ─
-  { brands:["Ferrari","Lamborghini","Maserati","Bentley","Rolls-Royce","Aston Martin"], models:[], engine:"essence", yearMin:1995, yearMax:2099,
-    produit:"Shell Helix Ultra 0W-40 PurePlus", viscosité:"0W-40",
-    normes:"Ferrari official partner · ACEA A3/B4 · API SN PLUS", vidange:"10 000 – 15 000 km",
-    complement:"Shell Spirax S6 GXME 75W-80",
-    raison:"Huile officielle Shell développée avec la Scuderia Ferrari, utilisée en Formule 1. Technologie PurePlus (synthèse gaz naturel) garantissant la pureté maximale pour les moteurs V8/V10/V12 de supercars. Approuvée pour Ferrari, Lamborghini, Bentley, Rolls-Royce et Aston Martin." },
+  { brands:["Land Rover","Jaguar"], engine:"essence", yearMin:2000, yearMax:2016,
+    produit:"Shell Helix Ultra 5W-40 SN Plus", viscosité:"5W-40",
+    normes:"JLR STJLR.51.5005 · ACEA A3/B4 · API SN", vidange:"15 000 km ou 1 an",
+    complement:"Spirax S2 G 80W-90",
+    raison:"Pour les moteurs JLR ancienne génération (AJ-V6/V8), Shell Helix Ultra 5W-40 disponible au Maroc.",
+    alerteProduit: null },
 
-  // ── TESLA / ÉLECTRIQUES ───────────────────────────────────
-  { brands:["Tesla","Polestar","Rivian","BYD","MG"], models:[], engine:"électrique", yearMin:2012, yearMax:2099,
-    produit:"Shell Transmission Fluid EV", viscosité:"N/A",
-    normes:"Tesla Drive Unit approval · ACEA · Polestar qualified", vidange:"100 000 km",
-    complement:"Shell Brake Fluid DOT 4+ (frein régénératif)",
-    raison:"Fluide dédié aux groupes motopropulseurs électriques. Refroidissement et lubrification des réducteurs monovitesse EV. Compatibilité avec les rotors cuivre des moteurs électriques et les onduleurs silicium carbure." },
+  // ════════════════════════════════
+  // PORSCHE
+  // ════════════════════════════════
+  { brands:["Porsche"], engine:"essence", yearMin:2000, yearMax:2099,
+    produit:"Shell Helix Ultra 5W-40 SN Plus", viscosité:"5W-40",
+    normes:"Porsche A40 · ACEA A3/B4 · API SN", vidange:"15 000 km ou 1 an",
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Le Shell Helix Ultra 5W-40 répond à la norme Porsche A40 et est disponible au Maroc.",
+    alerteProduit:"Shell Helix Ultra 0W-40 PurePlus (Porsche C20)",
+    alerteRaison:"Porsche préconise idéalement la Shell Helix Ultra 0W-40 PurePlus avec approbation Porsche C20. Ce produit n'est pas disponible au Maroc. Le Shell Helix Ultra 5W-40 SN Plus est la meilleure alternative disponible au Maroc (conforme Porsche A40)." },
 
-  // ── POIDS LOURDS ──────────────────────────────────────────
-  { brands:["MAN Trucks"], models:[], engine:"diesel", yearMin:2005, yearMax:2099,
-    produit:"Shell Rimula R6 LME 10W-40", viscosité:"10W-40",
+  // ════════════════════════════════
+  // FERRARI / LAMBORGHINI / BENTLEY / ROLLS-ROYCE / ASTON MARTIN / MASERATI
+  // ════════════════════════════════
+  { brands:["Ferrari","Lamborghini","Bentley","Rolls-Royce","Aston Martin","Maserati"], engine:"essence", yearMin:2000, yearMax:2099,
+    produit:"Shell Helix Ultra Racing 10W-60", viscosité:"10W-60",
+    normes:"Ferrari approbation officielle · ACEA A3/B4 · API SN PLUS", vidange:"10 000 – 15 000 km",
+    complement:"Spirax S6 GXME Ultra 75W-80",
+    raison:"Le Shell Helix Ultra Racing 10W-60 est disponible au Maroc (20L) et recommandé pour les moteurs haute performance V8/V10/V12. Huile officielle développée avec la Scuderia Ferrari.",
+    alerteProduit:"Shell Helix Ultra 0W-40 PurePlus",
+    alerteRaison:"Pour certaines supercars (Lamborghini Huracán, Bentley, Rolls-Royce), le constructeur recommande la Shell Helix Ultra 0W-40 PurePlus. Ce produit n'est pas au catalogue Maroc. Le Shell Helix Ultra Racing 10W-60 est la meilleure alternative disponible." },
+
+  // ════════════════════════════════
+  // VÉHICULES ÉLECTRIQUES
+  // ════════════════════════════════
+  { brands:["Tesla","Polestar","Rivian","BYD","MG"], engine:"électrique", yearMin:2012, yearMax:2099,
+    produit:"Spirax S6 ATF ZM", viscosité:"N/A",
+    normes:"ATF synthétique · Compatibilité EV", vidange:"100 000 km",
+    complement:"Shell Brake & Clutch Fluid DOT 4",
+    raison:"Pour les groupes motopropulseurs électriques, le Spirax S6 ATF ZM disponible au Maroc assure la lubrification des réducteurs EV.",
+    alerteProduit:"Shell Transmission Fluid EV",
+    alerteRaison:"Les constructeurs EV (Tesla, Polestar, BYD) recommandent idéalement le Shell Transmission Fluid EV dédié aux véhicules électriques. Ce produit n'est pas au catalogue Maroc. Le Spirax S6 ATF ZM est l'alternative disponible." },
+
+  // ════════════════════════════════
+  // POIDS LOURDS
+  // ════════════════════════════════
+  { brands:["MAN Trucks"], engine:"diesel", yearMin:2000, yearMax:2099,
+    produit:"Shell Rimula R6 LME Plus 5W-30", viscosité:"5W-30",
     normes:"MAN M3477 · ACEA E6/E9 · API CK-4", vidange:"120 000 km ou 1 an",
-    complement:"Shell Spirax S6 AXME 75W-90 (pont MAN HY)",
-    raison:"Approbation MAN M3477 pour les moteurs D20/D26/D38 Euro 6. Low-SAPS pour le FAP MAN, réduction de la consommation d'huile et protection des pistons PTWA en usage longue distance." },
+    complement:"Spirax S6 AXME 75W-90",
+    raison:"Le Shell Rimula R6 LME Plus 5W-30 est disponible au Maroc et répond à la norme MAN M3477 pour les moteurs D20/D26/D38 Euro 6.",
+    alerteProduit: null },
 
-  { brands:["Scania"], models:[], engine:"diesel", yearMin:2005, yearMax:2099,
-    produit:"Shell Rimula R6 ME 5W-30", viscosité:"5W-30",
+  { brands:["Scania"], engine:"diesel", yearMin:2000, yearMax:2099,
+    produit:"Shell Rimula R6 LME Plus 5W-30", viscosité:"5W-30",
     normes:"Scania LDF-3 · ACEA E6/E9 · API CK-4", vidange:"150 000 km ou 1 an",
-    complement:"Shell Spirax S6 AXME 75W-90",
-    raison:"Approbation Scania LDF-3 (Longlife Drain) pour les moteurs DC09/DC13/DC16 Euro 6. Économies de carburant 0,5% et intervalles de vidange records pour les flottes Scania." },
+    complement:"Spirax S6 AXME 75W-90",
+    raison:"Approbation Scania LDF-3 pour les moteurs DC09/DC13/DC16. Shell Rimula R6 LME Plus 5W-30 disponible au Maroc.",
+    alerteProduit: null },
 
-  { brands:["Volvo Trucks"], models:[], engine:"diesel", yearMin:2005, yearMax:2099,
-    produit:"Shell Rimula R6 M 10W-40", viscosité:"10W-40",
+  { brands:["Volvo Trucks"], engine:"diesel", yearMin:2000, yearMax:2099,
+    produit:"Shell Rimula R6 LM 10W-40", viscosité:"10W-40",
     normes:"Volvo VDS-4.5 · ACEA E7/E9 · API CK-4", vidange:"100 000 km ou 1 an",
-    complement:"Shell Spirax S6 AXME 75W-90",
-    raison:"Norme Volvo VDS-4.5 pour les moteurs D11/D13/D16 Euro 6. Protection maximale contre l'usure des pistons et du turbo dans les applications de transport longue distance Volvo." },
+    complement:"Spirax S6 AXME 75W-90",
+    raison:"Shell Rimula R6 LM 10W-40 disponible au Maroc. Répond à la norme Volvo VDS-4.5 pour les moteurs D11/D13/D16.",
+    alerteProduit: null },
 
-  { brands:["DAF"], models:[], engine:"diesel", yearMin:2005, yearMax:2099,
-    produit:"Shell Rimula R6 LME 10W-40", viscosité:"10W-40",
-    normes:"DAF Extended Drain · ACEA E6/E9 · API CK-4", vidange:"120 000 km ou 1 an",
-    complement:"Shell Spirax S6 AXME 75W-90",
-    raison:"Approuvé pour les moteurs MX-11 et MX-13 DAF Euro 6. Compatible avec les systèmes EAS (FAP + SCR + DOC) DAF. Vidanges prolongées réduisant les coûts d'exploitation des flottes." },
+  { brands:["DAF"], engine:"diesel", yearMin:2000, yearMax:2099,
+    produit:"Shell Rimula R5 LE 10W-40 CK-4", viscosité:"10W-40",
+    normes:"DAF Extended Drain · ACEA E6/E9 · API CK-4", vidange:"100 000 km ou 1 an",
+    complement:"Spirax S6 AXME 75W-90",
+    raison:"Shell Rimula R5 LE 10W-40 CK-4 disponible au Maroc. Adapté aux moteurs MX-11/MX-13 DAF Euro 6.",
+    alerteProduit: null },
 
-  { brands:["Iveco"], models:[], engine:"diesel", yearMin:2005, yearMax:2099,
+  { brands:["Iveco"], engine:"diesel", yearMin:2000, yearMax:2099,
     produit:"Shell Rimula R4 X 15W-40", viscosité:"15W-40",
     normes:"Iveco TLS 2-35975-2 · ACEA E7 · API CI-4+", vidange:"80 000 km ou 1 an",
-    complement:"Shell Spirax S6 AXME 75W-90",
-    raison:"Norme Iveco TLS pour les Cursor 9/11/13 Euro 5/6. Protection contre les dépôts sur pistons et maintien de la viscosité dans les moteurs Iveco à haute densité de puissance." },
+    complement:"Spirax S6 AXME 75W-90",
+    raison:"Shell Rimula R4 X 15W-40 disponible au Maroc en bidon, fût et IBC 1000L. Norme Iveco TLS pour les Cursor 9/11/13.",
+    alerteProduit: null },
 
-  { brands:["Mercedes Trucks","Renault Trucks"], models:[], engine:"diesel", yearMin:2005, yearMax:2099,
-    produit:"Shell Rimula R6 M 10W-40", viscosité:"10W-40",
+  { brands:["Mercedes Trucks","Renault Trucks"], engine:"diesel", yearMin:2000, yearMax:2099,
+    produit:"Shell Rimula R6 LM 10W-40", viscosité:"10W-40",
     normes:"MB 228.51 · ACEA E7/E9 · API CK-4 · Renault VI RLD-3", vidange:"100 000 km ou 1 an",
-    complement:"Shell Spirax S6 AXME 75W-90",
-    raison:"Double approbation Mercedes Trucks MB 228.51 et Renault Trucks RLD-3. Idéale pour les parcs mixtes Actros/T. Intervalles longue distance pour réduire les coûts d'exploitation." },
+    complement:"Spirax S6 AXME 75W-90",
+    raison:"Double approbation MB 228.51 et Renault Trucks RLD-3. Shell Rimula R6 LM 10W-40 disponible au Maroc.",
+    alerteProduit: null },
 
-  // ── MOTOS ─────────────────────────────────────────────────
-  { brands:["Honda Moto","Yamaha Moto","Kawasaki","Suzuki Moto","Aprilia"], models:[], engine:"essence", yearMin:1990, yearMax:2099,
-    produit:"Shell Advance Ultra 4T 10W-40", viscosité:"10W-40",
+  // ════════════════════════════════
+  // MOTOS
+  // ════════════════════════════════
+  { brands:["Honda Moto","Yamaha Moto","Kawasaki","Suzuki Moto","Aprilia"], engine:"essence", yearMin:1990, yearMax:2099,
+    produit:"Shell Advance 4T Ultra 10W-40 SP", viscosité:"10W-40",
     normes:"JASO MA2 · API SN · Honda HP4M · Yamaha LM TW", vidange:"6 000 – 8 000 km",
-    complement:"Shell Advance Gear 80W-90",
-    raison:"Certifiée JASO MA2 avec approbations officielles Honda et Yamaha. Protège simultanément moteur, embrayage humide et boîte de vitesses intégrée. Technologie PurePlus pour une propreté maximale." },
+    complement:"Spirax S2 G 80W-90",
+    raison:"Le Shell Advance 4T Ultra 10W-40 SP est disponible au Maroc. Certifié JASO MA2, avec approbations Honda et Yamaha officielles.",
+    alerteProduit: null },
 
-  { brands:["BMW Moto"], models:["R 1250 GS Adv","R 1250 R/RS","R nineT Urban G/S","F 850 GS Adv","F 900 R/XR","S 1000 RR M","S 1000 XR","M 1000 RR"], engine:"essence", yearMin:2014, yearMax:2099,
-    produit:"Shell Advance Ultra 4T 15W-50", viscosité:"15W-50",
-    normes:"BMW Motorrad GS recommendation · JASO MA2 · API SN", vidange:"10 000 km ou 1 an",
-    complement:"Shell Advance Gear 80W-90",
-    raison:"Viscosité 15W-50 recommandée par BMW Motorrad pour les twins boxer R1250 et S1000. Résistance thermique supérieure pour les moteurs BMW Moto à refroidissement mixte huile/air/eau fonctionnant à hautes températures." },
+  { brands:["BMW Moto"], engine:"essence", yearMin:1990, yearMax:2099,
+    produit:"Shell Advance 4T Ultra 15W-50", viscosité:"15W-50",
+    normes:"BMW Motorrad · JASO MA2 · API SN", vidange:"10 000 km ou 1 an",
+    complement:"Spirax S2 G 80W-90",
+    raison:"Le Shell Advance 4T Ultra 15W-50 est disponible au Maroc. Viscosité recommandée par BMW Motorrad pour les boxers R-series et les 4 cylindres S-series.",
+    alerteProduit: null },
 
-  { brands:["Ducati","KTM"], models:["Panigale V4 R","Multistrada V4 S","Streetfighter V4 S","Duke 1290 Super","Adventure 1290 S","Super Duke R 1290"], engine:"essence", yearMin:2012, yearMax:2099,
-    produit:"Shell Advance Ultra 4T 10W-50", viscosité:"10W-50",
-    normes:"Ducati TF approval · JASO MA2 · API SN", vidange:"6 000 km ou 1 an",
-    complement:"Shell Advance Gear 80W-90",
-    raison:"Viscosité 10W-50 approuvée Ducati pour les Desmodromic V4/L-twin. Protection optimale des culasses et des cames DESMO fonctionnant sans ressorts de rappel, à très haute température et régime." },
+  { brands:["Ducati","KTM","Triumph"], engine:"essence", yearMin:1990, yearMax:2099,
+    produit:"Shell Advance 4T Ultra 10W-40 SP", viscosité:"10W-40",
+    normes:"JASO MA2 · API SN · Ducati TF", vidange:"6 000 km ou 1 an",
+    complement:"Spirax S2 G 80W-90",
+    raison:"Pour les moteurs sportifs Ducati, KTM et Triumph, le Shell Advance 4T Ultra 10W-40 SP est disponible au Maroc.",
+    alerteProduit:"Shell Advance Ultra 4T 10W-50",
+    alerteRaison:"Ducati/KTM recommandent idéalement une viscosité 10W-50 pour une protection optimale à haute température. Ce produit n'est pas au catalogue Maroc. Le Shell Advance 4T Ultra 10W-40 SP est l'alternative disponible." },
 
-  { brands:["Harley-Davidson"], models:[], engine:"essence", yearMin:1995, yearMax:2099,
-    produit:"Shell Advance Ultra 4T 20W-50", viscosité:"20W-50",
-    normes:"Harley-Davidson SAE 20W-50 · JASO MA · API SJ/SL", vidange:"8 000 km ou 1 an",
-    complement:"Shell Advance Gear 80W-90",
-    raison:"Viscosité 20W-50 OBLIGATOIRE sur tous les V-Twin Harley-Davidson Milwaukee-Eight et Evolution. Cette viscosité élevée est requise par Harley pour protéger les poussoirs hydrauliques et les culasses à grande course des V-twins à fort couple." },
-
-  { brands:["Triumph"], models:["Street Triple 765 R/RS","Tiger 900 GT","Tiger 1200 GT Pro","Speed Triple 1200 RS","Bonneville T100/T120","Trident 660","Rocket 3 GT","Thruxton RS"], engine:"essence", yearMin:2012, yearMax:2099,
-    produit:"Shell Advance Ultra 4T 10W-40", viscosité:"10W-40",
-    normes:"Triumph approved · JASO MA2 · API SN", vidange:"8 000 km ou 1 an",
-    complement:"Shell Advance Gear 80W-90",
-    raison:"Approbation Triumph pour les moteurs 3 et 4 cylindres Triumph. La viscosité 10W-40 est celle recommandée dans les carnets Triumph pour une protection optimale des moteurs inline-3 à haute température." },
+  { brands:["Harley-Davidson"], engine:"essence", yearMin:1990, yearMax:2099,
+    produit:"Shell Advance 4T AX3 20W-50", viscosité:"20W-50",
+    normes:"Harley-Davidson SAE 20W50 · JASO MA · API SJ/SL", vidange:"8 000 km ou 1 an",
+    complement:"Spirax S2 G 80W-90",
+    raison:"La viscosité 20W-50 est obligatoire sur tous les V-Twin Harley-Davidson. Le Shell Advance 4T AX3 20W-50 est disponible au Maroc.",
+    alerteProduit: null },
 ];
 
-// ══════════════════════════════════════════════════════════
-// MOTEUR DE RECOMMANDATION — PRIORISE MODÈLE EXACT
-// ══════════════════════════════════════════════════════════
+// ════════════════════════════════
+// BASE INDUSTRIE — 100% CATALOGUE SHELL MAROC
+// ════════════════════════════════
 const INDUSTRIE_DB = [
   { equipType:"pompe hydraulique", tempRange:["froid","normal"], loadType:["légère","modérée"],
-    produit:"Shell Tellus S2 MX 46", viscosité:"ISO VG 46",
+    produit:"Shell Tellus S2 M 46", viscosité:"ISO VG 46",
     normes:"ISO 11158 HM · DIN 51524-2 HLP · Denison HF-0/1/2", intervalle:"4 000 h ou 1 an",
-    vigilance:"Vérifier la propreté du circuit (ISO 16/14/11). Contrôler la température de retour.",
-    raison:"Huile hydraulique polyvalente pour systèmes industriels courants. Protection antioxydante renforcée et excellente séparabilité eau/huile." },
+    vigilance:"Contrôler la propreté du circuit (ISO 16/14/11). Surveiller la température de retour.",
+    raison:"Disponible au Maroc en fût 209L et bidon 20L. Huile hydraulique minérale polyvalente pour systèmes industriels courants." },
   { equipType:"pompe hydraulique", tempRange:["chaud","extrême"], loadType:["lourde","extrême"],
-    produit:"Shell Tellus S4 VX 46", viscosité:"ISO VG 46",
+    produit:"Shell Tellus S2 V 46", viscosité:"ISO VG 46",
     normes:"ISO 11158 HV · DIN 51524-3 HVLP · Vickers M2950", intervalle:"6 000 h ou 2 ans",
-    vigilance:"Surveiller viscosité à chaud. Adapter filtration si contamination élevée.",
-    raison:"Synthétique stable sur large plage de température. Idéale pour environnements avec fortes variations thermiques." },
+    vigilance:"Surveiller la viscosité à chaud. Adapter la filtration si contamination.",
+    raison:"Disponible au Maroc. Formule à indice de viscosité élevé, stable sur large plage de température — idéal pour le climat marocain (chaleur estivale)." },
   { equipType:"compresseur", tempRange:["froid","normal","chaud"], loadType:["légère","modérée"],
-    produit:"Shell Corena S3 R 46", viscosité:"ISO VG 46",
+    produit:"Shell Corena S3 R 68", viscosité:"ISO VG 68",
     normes:"ISO 6743-3A DAA/DAB · DIN 51506 VDL", intervalle:"4 000 h",
-    vigilance:"Vidanger à chaud après arrêt. Remplacer filtre séparateur simultanément.",
-    raison:"Protection pour compresseurs rotatifs à vis. Réduit les dépôts et prolonge les joints." },
+    vigilance:"Vidanger à chaud. Remplacer le filtre séparateur simultanément.",
+    raison:"Disponible au Maroc en bidon 20L. Protection pour compresseurs rotatifs à vis en conditions standards." },
   { equipType:"compresseur", tempRange:["extrême"], loadType:["lourde","extrême"],
     produit:"Shell Corena S4 R 46", viscosité:"ISO VG 46",
-    normes:"ISO 6743-3A DAA · Atlas Copco Roto-Xtend Fluid", intervalle:"8 000 h",
+    normes:"ISO 6743-3A DAA · Atlas Copco Roto-Xtend · Kaeser Sigma Fluid S-460", intervalle:"8 000 h",
     vigilance:"Filtres certifiés obligatoires. Analyse d'huile tous les 2 000 h.",
-    raison:"Synthétique haute performance pour compresseurs sous forte charge continue. Compatible Atlas Copco et Gardner Denver." },
+    raison:"Disponible au Maroc en bidon 20L et fût 209L. Synthétique haute performance pour compresseurs sous forte charge continue." },
   { equipType:"réducteur / engrenage", tempRange:["froid","normal","chaud"], loadType:["légère","modérée","lourde"],
     produit:"Shell Omala S2 GX 220", viscosité:"ISO VG 220",
     normes:"ISO 12925-1 CKC/CKD · AGMA 9005-F16 · DIN 51517-3", intervalle:"5 000 h ou 1 an",
-    vigilance:"Contrôler niveau avant démarrage. Nettoyer filtre magnétique à chaque vidange.",
-    raison:"Huile EP pour engrenages fermés résistant aux chocs de charge et micropitting." },
+    vigilance:"Contrôler le niveau avant démarrage. Nettoyer le filtre magnétique.",
+    raison:"Disponible au Maroc en bidon 20L et fût 209L. Huile EP pour engrenages, résistante aux chocs et au micropitting." },
   { equipType:"réducteur / engrenage", tempRange:["extrême"], loadType:["extrême"],
-    produit:"Shell Omala S4 GX 220", viscosité:"ISO VG 220",
+    produit:"Shell Omala S4 GXV 220", viscosité:"ISO VG 220",
     normes:"ISO 12925-1 CKD · Flender EXTRA · David Brown S1.53.101", intervalle:"10 000 h ou 2 ans",
-    vigilance:"Ne pas mélanger avec huiles minérales. Surveiller température de carter.",
-    raison:"Synthétique de pointe, réduit 40% les pertes par friction. Double les intervalles vs huile minérale." },
+    vigilance:"Ne pas mélanger avec huiles minérales.",
+    raison:"Disponible au Maroc en fût 209L. Synthétique de pointe, réduit 40% les pertes par friction dans les réducteurs sous forte charge." },
   { equipType:"convoyeur", tempRange:["froid","normal","chaud","extrême"], loadType:["légère","modérée","lourde","extrême"],
     produit:"Shell Gadus S3 V220C 2", viscosité:"NLGI 2",
-    normes:"DIN 51825 KP2K-30 · ISO 12924", intervalle:"500 – 1 000 h selon conditions",
-    vigilance:"Regraisser plus fréquemment en milieu humide ou poussiéreux. Purger avant application.",
-    raison:"Graisse lithium complexe résistante à l'eau, aux vibrations et aux températures élevées." },
+    normes:"DIN 51825 KP2K-30 · ISO 12924", intervalle:"500 – 1 000 h",
+    vigilance:"Regraisser plus fréquemment en milieu humide. Purger avant application.",
+    raison:"Disponible au Maroc en cartouche 0,4 kg, seau 18 kg et fût 180 kg. Graisse lithium complexe résistante à l'eau et aux températures élevées." },
   { equipType:"machine-outil", tempRange:["froid","normal"], loadType:["légère","modérée"],
-    produit:"Shell Morlina S2 B 68", viscosité:"ISO VG 68",
-    normes:"ISO 6743-7 FD · DIN 51519 VG 68 · Cincinnati P-47", intervalle:"2 000 h ou 6 mois",
-    vigilance:"Filtrer finement (< 10 µm). Maintenir niveau du bain en permanence.",
-    raison:"Huile circulante pour broches et glissières. Anti-mousse et protection rouille longue durée." },
+    produit:"Shell Morlina S2 BA 100", viscosité:"ISO VG 100",
+    normes:"ISO 6743-7 FD · DIN 51519 VG 100", intervalle:"2 000 h ou 6 mois",
+    vigilance:"Filtrer finement (< 10 µm). Maintenir le niveau du bain.",
+    raison:"Disponible au Maroc en fût 209L. Huile circulante pour broches et glissières, anti-mousse et protection rouille." },
   { equipType:"turbine", tempRange:["chaud","extrême"], loadType:["modérée","lourde"],
-    produit:"Shell Turbo S4 X 32", viscosité:"ISO VG 32",
+    produit:"Shell Turbo S4 GX 32", viscosité:"ISO VG 32",
     normes:"ISO 6743-5 TD/TG · GE GEK 107395 · Siemens TLV 901304", intervalle:"20 000 – 40 000 h",
-    vigilance:"Surveiller TAN et oxydation. Analyses d'huile tous les 3 mois.",
-    raison:"Synthétique pour turbines vapeur et gaz. Résistance à l'oxydation exceptionnelle." },
+    vigilance:"Surveiller le TAN et l'oxydation. Analyses d'huile tous les 3 mois.",
+    raison:"Disponible au Maroc en fût 209L. Synthétique pour turbines vapeur et gaz, résistance à l'oxydation exceptionnelle." },
   { equipType:"groupe électrogène", tempRange:["froid","normal","chaud"], loadType:["modérée","lourde"],
     produit:"Shell Rimula R4 X 15W-40", viscosité:"15W-40",
     normes:"ACEA E7 · API CI-4 PLUS · Caterpillar ECF-2", intervalle:"500 h ou 1 an",
-    vigilance:"Vérifier niveau toutes les 50 h. Respecter intervalles en usage stationnaire.",
-    raison:"Huile diesel robuste pour groupes électrogènes. Protection boues basse température et usure cames." },
+    vigilance:"Vérifier le niveau toutes les 50 h. Respecter les intervalles en usage stationnaire.",
+    raison:"Disponible au Maroc en bidon 1L, 5L, 20L, fût 209L et IBC 1000L. Robuste pour groupes électrogènes, protection contre les boues à basse température." },
 ];
 
+// ════════════════════════════════
+// MOTEUR DE RECOMMANDATION
+// ════════════════════════════════
 function recommend(sector, fields) {
   if (sector !== "auto") {
-    const et = (fields.equipType||"").toLowerCase();
-    const tr = (fields.tempRange||"").toLowerCase();
-    const lt = (fields.loadType||"").toLowerCase();
+    const et = (fields.equipType || "").toLowerCase();
+    const tr = (fields.tempRange  || "").toLowerCase();
+    const lt = (fields.loadType   || "").toLowerCase();
     let best = null, bestScore = -1;
     for (const r of INDUSTRIE_DB) {
       if (!et.includes(r.equipType) && !r.equipType.includes(et)) continue;
@@ -637,48 +776,33 @@ function recommend(sector, fields) {
     }
     return best;
   }
-
   const { brand, model, engine, year } = fields;
-  const e  = (engine||"").toLowerCase();
+  const e  = (engine || "").toLowerCase();
   const y  = parseInt(year) || 2020;
-  const mo = (model||"").toLowerCase();
-
+  const mo = (model  || "").toLowerCase();
   let best = null, bestScore = -1;
-
   for (const r of RECO) {
     if (!r.brands.includes(brand)) continue;
     if (r.engine !== e) continue;
     if (y < r.yearMin || y > r.yearMax) continue;
-
-    let score = 10; // base score for brand+engine+year match
-
-    // Bonus si le modèle est explicitement listé
+    let score = 10;
     if (r.models && r.models.length > 0) {
-      const modelMatch = r.models.some(m => {
+      const match = r.models.some(m => {
         const ml = m.toLowerCase();
-        // exact or partial match
-        return mo.includes(ml) || ml.includes(mo) ||
-          mo.split(/[\s\/]/)[0] === ml.split(/[\s\/]/)[0]; // prefix match
+        return mo.includes(ml) || ml.includes(mo) || mo.split(/[\s\/]/)[0] === ml.split(/[\s\/]/)[0];
       });
-      if (modelMatch) score += 20; // forte priorité si modèle exact trouvé
-      else score -= 5; // légère pénalité si modèle non listé
-    } else {
-      // Règle générique (marque sans liste de modèles) = score neutre
-      score += 0;
+      score += match ? 20 : -5;
     }
-
-    // Bonus plus récent = probablement plus précis
     score += Math.min((r.yearMin - 2000) / 2, 8);
-
     if (score > bestScore) { bestScore = score; best = r; }
   }
   return best;
 }
 
-// ══════════════════════════════════════════════════════════
+// ════════════════════════════════
 // UI
-// ══════════════════════════════════════════════════════════
-const S = { bg:"#F4F1EB", dark:"#0F0F0F", red:"#DD1D21", yellow:"#FBCE07", white:"#FFFFFF", border:"#DDD9D0", muted:"#888", text:"#222" };
+// ════════════════════════════════
+const S = { bg:"#F4F1EB", dark:"#0F0F0F", red:"#DD1D21", yellow:"#FBCE07", white:"#FFFFFF", border:"#DDD9D0", muted:"#888", text:"#222", orange:"#E8630A" };
 const selSt = { width:"100%", border:`1.5px solid ${S.border}`, borderRadius:6, padding:"10px 12px", fontFamily:"inherit", fontSize:14, color:S.text, background:S.white, outline:"none", appearance:"none", boxSizing:"border-box", cursor:"pointer", backgroundImage:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")`, backgroundRepeat:"no-repeat", backgroundPosition:"right 12px center", paddingRight:36 };
 const inpSt = { width:"100%", border:`1.5px solid ${S.border}`, borderRadius:6, padding:"10px 12px", fontFamily:"inherit", fontSize:14, color:S.text, background:S.white, outline:"none", appearance:"none", boxSizing:"border-box" };
 const Lbl  = ({ t, req }) => <div style={{ fontSize:10, fontWeight:700, letterSpacing:2, textTransform:"uppercase", color:S.muted, marginBottom:6 }}>{t}{req && <span style={{ color:S.red }}> *</span>}</div>;
@@ -687,25 +811,25 @@ const Chip = ({ label, active, onClick }) => <button onClick={onClick} style={{ 
 const ShellLogo = () => <svg width="36" height="36" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#FBCE07"/><path d="M50 8C28 8 12 24 12 46c0 11 5 21 13 28l11-8c-6-5-10-12-10-20 0-14 11-25 24-25s24 11 24 25c0 8-4 15-10 20l11 8c8-7 13-17 13-28C88 24 72 8 50 8z" fill="#DD1D21"/><path d="M36 66l14 26 14-26c-5 4-9.5 6-14 6s-9-2-14-6z" fill="#DD1D21"/></svg>;
 
 export default function App() {
-  const [sector,  setSector]  = useState("auto");
-  const [brand,   setBrand]   = useState("");
-  const [model,   setModel]   = useState("");
-  const [year,    setYear]    = useState("");
-  const [engine,  setEngine]  = useState("");
-  const [equipType,    setEquipType]    = useState("");
-  const [manufacturer, setManufacturer] = useState("");
-  const [machineModel, setMachineModel] = useState("");
-  const [tempRange,    setTempRange]    = useState("");
-  const [loadType,     setLoadType]     = useState("");
-  const [result,   setResult]  = useState(null);
-  const [noMatch,  setNoMatch] = useState(false);
-  const [searched, setSearched]= useState(false);
-  const [brandSearch, setBrandSearch] = useState("");
+  const [sector,       setSector]      = useState("auto");
+  const [brand,        setBrand]       = useState("");
+  const [model,        setModel]       = useState("");
+  const [year,         setYear]        = useState("");
+  const [engine,       setEngine]      = useState("");
+  const [brandSearch,  setBrandSearch] = useState("");
+  const [equipType,    setEquipType]   = useState("");
+  const [manufacturer, setManufacturer]= useState("");
+  const [machineModel, setMachineModel]= useState("");
+  const [tempRange,    setTempRange]   = useState("");
+  const [loadType,     setLoadType]    = useState("");
+  const [result,       setResult]      = useState(null);
+  const [noMatch,      setNoMatch]     = useState(false);
+  const [searched,     setSearched]    = useState(false);
 
   const models   = brand && VEHICLES[brand] ? VEHICLES[brand] : [];
-  const isMoto   = MOTOS.includes(brand);
-  const isPL     = PL.includes(brand);
-  const engines  = isMoto ? ["Essence"] : isPL ? ["Diesel"] : ["Essence","Diesel","Hybride","Électrique","GPL"];
+  const isMoto   = ["Honda Moto","Yamaha Moto","Kawasaki","Suzuki Moto","Ducati","KTM","BMW Moto","Triumph","Harley-Davidson","Aprilia"].includes(brand);
+  const isPL     = ["MAN Trucks","Scania","Volvo Trucks","Iveco","DAF","Mercedes Trucks","Renault Trucks"].includes(brand);
+  const engines  = isMoto ? ["Essence"] : isPL ? ["Diesel"] : ["Essence","Diesel","Hybride","Électrique","Sport"];
 
   function handleBrand(b) { setBrand(b); setModel(""); setEngine(""); }
 
@@ -741,17 +865,17 @@ export default function App() {
           <ShellLogo />
           <span style={{ fontSize:17, fontWeight:800, color:S.white }}>Shell <span style={{ color:S.yellow }}>LubriGuide</span></span>
         </div>
-        <div style={{ background:S.red, color:S.white, fontSize:9, fontWeight:800, letterSpacing:2, padding:"3px 8px", borderRadius:2 }}>GUIDE EXPERT</div>
+        <div style={{ background:S.red, color:S.white, fontSize:9, fontWeight:800, letterSpacing:2, padding:"3px 8px", borderRadius:2 }}>🇲🇦 MAROC</div>
       </div>
 
       {/* HERO */}
-      <div style={{ background:S.dark, padding:"36px 20px 30px", borderBottom:`4px solid ${S.yellow}` }}>
-        <div style={{ fontSize:10, fontWeight:800, letterSpacing:4, textTransform:"uppercase", color:S.yellow, marginBottom:8 }}>Recommandations lubrifiantes Shell</div>
-        <div style={{ fontSize:"clamp(24px,5vw,48px)", fontWeight:900, lineHeight:1.05, color:S.white, marginBottom:12 }}>
-          Normes exactes<br /><span style={{ color:S.yellow }}>par constructeur & modèle</span>
+      <div style={{ background:S.dark, padding:"32px 20px 26px", borderBottom:`4px solid ${S.yellow}` }}>
+        <div style={{ fontSize:10, fontWeight:800, letterSpacing:4, textTransform:"uppercase", color:S.yellow, marginBottom:8 }}>Portefeuille Shell Maroc</div>
+        <div style={{ fontSize:"clamp(22px,5vw,44px)", fontWeight:900, lineHeight:1.1, color:S.white, marginBottom:10 }}>
+          Lubrifiant Shell disponible<br /><span style={{ color:S.yellow }}>au Maroc · Specs constructeur</span>
         </div>
-        <p style={{ color:"rgba(255,255,255,0.45)", fontSize:13, lineHeight:1.7 }}>
-          Spécifications OEM officielles · 80+ marques · Viscosité exacte · Carnet d'entretien respecté
+        <p style={{ color:"rgba(255,255,255,0.45)", fontSize:12, lineHeight:1.7 }}>
+          Recommandations basées exclusivement sur le catalogue Shell Maroc · Alertes si produit absent du portefeuille
         </p>
       </div>
 
@@ -776,7 +900,6 @@ export default function App() {
           <div style={{ padding:18 }}>
             {sector === "auto" && (
               <>
-                {/* MARQUE */}
                 <div style={{ marginBottom:14 }}>
                   <Lbl t="Marque du véhicule" />
                   <input style={{ ...inpSt, marginBottom:6 }} placeholder="🔍 Rechercher une marque…" value={brandSearch} onChange={e => setBrandSearch(e.target.value)} />
@@ -791,7 +914,6 @@ export default function App() {
                   {brand && <div style={{ marginTop:6, fontSize:12, color:S.muted }}>✓ <strong style={{ color:S.text }}>{brand}</strong> <button onClick={() => handleBrand("")} style={{ marginLeft:8, background:"none", border:"none", color:S.red, cursor:"pointer", fontSize:11 }}>× Changer</button></div>}
                 </div>
 
-                {/* MODÈLE */}
                 {brand && models.length > 0 && (
                   <div style={{ marginBottom:14 }}>
                     <Lbl t="Modèle" />
@@ -799,7 +921,7 @@ export default function App() {
                       <option value="">— Sélectionnez un modèle —</option>
                       {models.map(m => <option key={m} value={m}>{m}</option>)}
                     </select>
-                    {model && <div style={{ marginTop:4, fontSize:11, color:"#2d9e2d" }}>✓ La recommandation sera adaptée à votre modèle exact</div>}
+                    {model && <div style={{ marginTop:4, fontSize:11, color:"#2d9e2d" }}>✓ Recommandation adaptée au modèle exact</div>}
                   </div>
                 )}
 
@@ -828,12 +950,12 @@ export default function App() {
                   <Lbl t="Type d'équipement" req />
                   <select style={selSt} value={equipType} onChange={e => setEquipType(e.target.value)}>
                     <option value="">— Sélectionnez un type —</option>
-                    {["Pompe hydraulique","Compresseur","Réducteur / engrenage","Convoyeur","Machine-outil","Turbine","Groupe électrogène"].map(e => <option key={e} value={e}>{e}</option>)}
+                    {["Pompe hydraulique","Compresseur","Réducteur / engrenage","Convoyeur","Machine-outil","Turbine","Groupe électrogène"].map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
                 <G2>
-                  <div><Lbl t="Fabricant" /><input style={inpSt} value={manufacturer} onChange={e=>setManufacturer(e.target.value)} placeholder="ex: Atlas Copco…" /></div>
-                  <div><Lbl t="Modèle / Réf." /><input style={inpSt} value={machineModel} onChange={e=>setMachineModel(e.target.value)} placeholder="ex: GA 15…" /></div>
+                  <div><Lbl t="Fabricant" /><input style={inpSt} value={manufacturer} onChange={e => setManufacturer(e.target.value)} placeholder="ex: Atlas Copco…" /></div>
+                  <div><Lbl t="Modèle / Réf." /><input style={inpSt} value={machineModel} onChange={e => setMachineModel(e.target.value)} placeholder="ex: GA 15…" /></div>
                 </G2>
                 <div style={{ marginBottom:14 }}>
                   <Lbl t="Température de service" />
@@ -852,7 +974,7 @@ export default function App() {
 
             <div style={{ display:"flex", gap:10, marginTop:20 }}>
               <button onClick={search} disabled={!canSearch} style={{ flex:1, background:canSearch?S.red:"#ccc", color:S.white, border:"none", borderRadius:6, padding:"13px", fontWeight:800, fontSize:15, cursor:canSearch?"pointer":"not-allowed", fontFamily:"inherit" }}>
-                🔍 Trouver le lubrifiant Shell
+                🔍 Trouver le lubrifiant Shell Maroc
               </button>
               {searched && <button onClick={reset} style={{ background:"none", border:`1px solid ${S.border}`, borderRadius:6, padding:"13px 18px", fontSize:13, color:S.muted, cursor:"pointer", fontFamily:"inherit" }}>↺</button>}
             </div>
@@ -862,7 +984,8 @@ export default function App() {
         {/* RÉSULTAT */}
         {result && (
           <div style={{ animation:"fadeUp 0.4s ease" }}>
-            {sector==="auto" && brand && (
+            {/* RECAP */}
+            {sector === "auto" && brand && (
               <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginBottom:14 }}>
                 <span style={{ background:S.dark, color:S.yellow, fontWeight:700, fontSize:12, padding:"4px 12px", borderRadius:20 }}>
                   {brand}{model?` · ${model}`:""}{year?` · ${year}`:""}{engine?` · ${engine}`:""}
@@ -870,8 +993,31 @@ export default function App() {
               </div>
             )}
 
+            {/* ⚠️ ALERTE PRODUIT ABSENT DU CATALOGUE MAROC */}
+            {result.alerteProduit && (
+              <div style={{ background:"#FFF3E0", border:`2px solid ${S.orange}`, borderRadius:10, padding:"14px 18px", marginBottom:14 }}>
+                <div style={{ display:"flex", alignItems:"flex-start", gap:10 }}>
+                  <span style={{ fontSize:20, flexShrink:0 }}>⚠️</span>
+                  <div>
+                    <div style={{ fontWeight:800, fontSize:12, color:S.orange, textTransform:"uppercase", letterSpacing:1, marginBottom:4 }}>
+                      Produit recommandé par le constructeur — Non disponible au Maroc
+                    </div>
+                    <div style={{ fontWeight:700, fontSize:13, color:"#333", marginBottom:4 }}>
+                      {result.alerteProduit}
+                    </div>
+                    <div style={{ fontSize:12, color:"#666", lineHeight:1.6 }}>
+                      {result.alerteRaison}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* PRODUIT DISPONIBLE AU MAROC */}
             <div style={{ background:S.dark, borderRadius:10, padding:"20px", marginBottom:14, borderLeft:`5px solid ${S.yellow}` }}>
-              <div style={{ fontSize:9, letterSpacing:3, textTransform:"uppercase", color:"rgba(255,255,255,0.35)", marginBottom:6 }}>🛢️ Produit Shell recommandé</div>
+              <div style={{ fontSize:9, letterSpacing:3, textTransform:"uppercase", color:"rgba(255,255,255,0.35)", marginBottom:4 }}>
+                🛢️ {result.alerteProduit ? "Meilleure alternative disponible au Maroc" : "Produit Shell Maroc recommandé"}
+              </div>
               <div style={{ fontSize:22, fontWeight:900, color:S.white, lineHeight:1.2 }}>{result.produit}</div>
               {result.viscosité && result.viscosité !== "N/A" && (
                 <span style={{ display:"inline-block", marginTop:8, background:S.yellow, color:S.dark, fontFamily:"monospace", fontWeight:700, fontSize:12, padding:"3px 10px", borderRadius:3 }}>
@@ -881,18 +1027,19 @@ export default function App() {
               <div style={{ marginTop:12, fontSize:12, color:"rgba(255,255,255,0.55)", lineHeight:1.7 }}>{result.raison}</div>
             </div>
 
+            {/* DÉTAILS */}
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(180px,1fr))", gap:12, marginBottom:12 }}>
               <div style={{ background:S.white, borderRadius:8, padding:"14px 16px", border:`1px solid ${S.border}` }}>
                 <div style={{ fontSize:9, fontWeight:800, letterSpacing:2, textTransform:"uppercase", color:S.yellow, background:S.dark, display:"inline-block", padding:"2px 7px", borderRadius:2, marginBottom:8 }}>📋 Normes constructeur</div>
                 <div style={{ fontSize:11, color:S.text, lineHeight:1.9, fontFamily:"monospace" }}>{result.normes}</div>
               </div>
               <div style={{ background:S.white, borderRadius:8, padding:"14px 16px", border:`1px solid ${S.border}` }}>
-                <div style={{ fontSize:9, fontWeight:800, letterSpacing:2, textTransform:"uppercase", color:S.yellow, background:S.dark, display:"inline-block", padding:"2px 7px", borderRadius:2, marginBottom:8 }}>🔁 {result.vidange?"Intervalle vidange":"Intervalle"}</div>
-                <div style={{ fontSize:14, fontWeight:700, color:S.text }}>{result.vidange||result.intervalle}</div>
+                <div style={{ fontSize:9, fontWeight:800, letterSpacing:2, textTransform:"uppercase", color:S.yellow, background:S.dark, display:"inline-block", padding:"2px 7px", borderRadius:2, marginBottom:8 }}>🔁 {result.vidange ? "Intervalle vidange" : "Intervalle"}</div>
+                <div style={{ fontSize:14, fontWeight:700, color:S.text }}>{result.vidange || result.intervalle}</div>
               </div>
               <div style={{ background:S.white, borderRadius:8, padding:"14px 16px", border:`1px solid ${S.border}` }}>
-                <div style={{ fontSize:9, fontWeight:800, letterSpacing:2, textTransform:"uppercase", color:S.yellow, background:S.dark, display:"inline-block", padding:"2px 7px", borderRadius:2, marginBottom:8 }}>{result.complement?"➕ Complémentaire":"⚠️ Vigilance"}</div>
-                <div style={{ fontSize:12, color:S.text, lineHeight:1.6 }}>{result.complement||result.vigilance}</div>
+                <div style={{ fontSize:9, fontWeight:800, letterSpacing:2, textTransform:"uppercase", color:S.yellow, background:S.dark, display:"inline-block", padding:"2px 7px", borderRadius:2, marginBottom:8 }}>{result.complement ? "➕ Complémentaire" : "⚠️ Vigilance"}</div>
+                <div style={{ fontSize:12, color:S.text, lineHeight:1.6 }}>{result.complement || result.vigilance}</div>
               </div>
             </div>
 
@@ -903,7 +1050,7 @@ export default function App() {
             )}
 
             <div style={{ background:"#f9f9f9", border:`1px solid ${S.border}`, borderRadius:6, padding:"10px 14px", fontSize:11, color:S.muted, lineHeight:1.6 }}>
-              ℹ️ Recommandation basée sur les spécifications OEM officielles. Vérifiez toujours votre carnet d'entretien et les bulletins techniques de votre constructeur.
+              ℹ️ Recommandations basées sur le portefeuille Shell Maroc. En cas de doute, consultez votre distributeur Shell agréé ou le carnet d'entretien du véhicule.
             </div>
           </div>
         )}
@@ -913,14 +1060,14 @@ export default function App() {
             <div style={{ fontSize:36, marginBottom:12 }}>🔍</div>
             <div style={{ fontWeight:700, fontSize:16, marginBottom:8 }}>Aucune correspondance</div>
             <p style={{ fontSize:13, color:S.muted, lineHeight:1.6, maxWidth:320, margin:"0 auto" }}>
-              Essayez avec une autre combinaison ou contactez votre distributeur Shell agréé pour une recommandation personnalisée.
+              Sélectionnez une marque et une motorisation pour obtenir une recommandation. Contactez votre distributeur Shell Maroc pour les cas particuliers.
             </p>
           </div>
         )}
       </div>
 
       <div style={{ background:S.dark, padding:"14px 20px", textAlign:"center", fontSize:10, color:"rgba(255,255,255,0.25)", letterSpacing:1 }}>
-        © Shell LubriGuide · Basé sur les spécifications OEM officielles des constructeurs · Données indicatives
+        © Shell LubriGuide Maroc · Basé sur le portefeuille Shell Maroc officiel · Données indicatives
       </div>
     </div>
   );
